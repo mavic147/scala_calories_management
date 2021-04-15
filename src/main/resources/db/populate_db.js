@@ -2,18 +2,19 @@ db.users.remove({})
 db.user_roles.remove({})
 db.meals.remove({})
 
-// use users
+// use calories_management
+db.createCollection("users")
 user = ({name: "UserAlice", email: "user@yandex.ru", password: "user"})
 admin = ({name: "AdminMark", email: "admin@gmail.com", password: "admin"})
-db.users.insertMany(user, admin)
+db.users.insertMany([user, admin])
 
-//use user_roles
-db.user_roles.insertMany({role: "user", user_id: new DBRef('users', user._id)},
+db.createCollection("user_roles")
+db.user_roles.insertMany([{role: "User", user_id: new DBRef('users', user._id)},
     {role: "Admin", user_id: new DBRef('users', admin._id)},
-    {role: "User", user_id: new DBRef('users', admin._id)})
+    {role: "User", user_id: new DBRef('users', admin._id)}])
 
-// use meals
-db.meals.insertMany({
+db.createCollection("meals")
+db.meals.insertMany([{
         description: "Омлет с грибами",
         dateTime: "2021-01-30 10:00:00",
         calories: 500,
@@ -56,4 +57,4 @@ db.meals.insertMany({
         dateTime: "2021-01-31 21:00:00",
         calories: 1500,
         user_id: new DBRef('users', admin._id)
-    })
+    }])
