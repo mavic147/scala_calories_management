@@ -1,19 +1,29 @@
 package com.app.model
 
 import com.app.model.Role.Role
-
+import org.mongodb.scala.bson.ObjectId
 import java.time.LocalDateTime
 import java.util.Date
 
-case class Meal(id: Int, dateTime: LocalDateTime, description: String, calories: Int) {
+object Meal {
+  def apply(dateTime: LocalDateTime, description: String, calories: Int, userId: ObjectId): Meal =
+    Meal(new ObjectId(), dateTime, description, calories, userId)
+}
 
-  override def toString: String = s"Meal {id= ${id}, dateTime= ${dateTime}, description= ${description}, " +
+case class Meal(_id: ObjectId, dateTime: LocalDateTime, description: String, calories: Int, userId: ObjectId) {
+
+  override def toString: String = s"Meal {id= ${_id}, dateTime= ${dateTime}, description= ${description}, " +
     s"calories= ${calories}"
 }
 
-case class User(id:Int, name:String, email:String, password:String, caloriesPerDay:Int, registered:Date, roles: List[Role]) {
+object User {
+  def apply(name: String, email: String, password: String, caloriesPerDay: Int, registered: Date, roles: List[Role]): User =
+    User(new ObjectId(), name, email, password, caloriesPerDay, registered, roles)
+}
 
-  override def toString: String = s"User {id= ${id}, name= ${name}, email= ${email}, caloriesPerDay= ${caloriesPerDay}}"
+case class User(_id:ObjectId, name:String, email:String, password:String, caloriesPerDay:Int, registered:Date, roles: List[Role]) {
+
+  override def toString: String = s"User {id= ${_id}, name= ${name}, email= ${email}, caloriesPerDay= ${caloriesPerDay}}"
 }
 
 object Role extends Enumeration {

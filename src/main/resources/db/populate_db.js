@@ -4,53 +4,53 @@ db.meals.remove({})
 //Обязательно раскоментить при накате!!!
 // use calories_management
 db.createCollection("users")
-userId = ObjectId()
-adminId = ObjectId()
-db.users.insertMany([{_id:userId, name: "UserAlice", email: "user@yandex.ru", password: "user", roles:["User"]},
-    {_id:adminId, name: "AdminMark", email: "admin@gmail.com", password: "admin", roles:["Admin", "User"]}])
+user_id = ObjectId()
+admin_id = ObjectId()
+db.users.insertMany([{_id:user_id, name: "UserAlice", email: "user@yandex.ru", password: "user", roles:["User"]},
+    {_id:admin_id, name: "AdminMark", email: "admin@gmail.com", password: "admin", roles:["Admin", "User"]}])
 
 db.createCollection("meals")
 db.meals.insertMany([{
-        description: "Омлет с грибами",
         dateTime: "2021-01-30 10:00:00",
+        description: "Омлет с грибами",
         calories: 500,
-        user_id:userId
+        userId:user_id
     },
-    {description: "Гаспачо", dateTime: "2021-01-30 13:00:00", calories: 500, user_id:userId},
+    {dateTime: "2021-01-30 13:00:00", description: "Гаспачо",  calories: 500, userId:user_id},
     {
-        description: "Паста с морепродуктами",
         dateTime: "2021-01-30 20:00:00",
+        description: "Паста с морепродуктами",
         calories: 1000,
-        user_id:userId
+        userId:user_id
     },
     {
-        description: "Еда на граничное значение",
         dateTime: "2021-01-31 0:00:00",
+        description: "Еда на граничное значение",
         calories: 100,
-        user_id:userId
+        userId:user_id
     },
     {
-        description: "Яичница и творог",
         dateTime: "2021-01-31 10:00:00",
+        description: "Яичница и творог",
         calories: 400,
-        user_id:userId
+        userId:user_id
     },
-    {description: "Пицца", dateTime: "2021-01-31 13:00:00", calories: 1000, user_id:userId},
+    {dateTime: "2021-01-31 13:00:00", description: "Пицца", calories: 1000, userId:user_id},
     {
-        description: "Камчатский краб",
         dateTime: "2021-01-31 20:00:00",
+        description: "Камчатский краб",
         calories: 510,
-        user_id:userId
+        userId:user_id
     },
     {
-        description: "Блины для админа",
         dateTime: "2021-01-31 14:00:00",
+        description: "Блины для админа",
         calories: 510,
-        user_id:adminId
+        userId:admin_id
     },
     {
-        description: "Гамбургер с колой для админа",
         dateTime: "2021-01-31 21:00:00",
+        description: "Гамбургер с колой для админа",
         calories: 1500,
-        user_id:adminId
+        userId:admin_id
     }])
