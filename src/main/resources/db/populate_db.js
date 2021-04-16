@@ -1,5 +1,9 @@
 db.users.remove({})
 db.meals.remove({})
+db.users.dropIndex("email_1")
+db.meals.dropIndex("userId_1_dateTime_1")
+db.users.createIndex({"email":1}, {unique:true})
+db.meals.createIndex({"userId":1, "dateTime":1}, {unique:true})
 
 //Обязательно раскоментить при накате!!!
 // use calories_management
