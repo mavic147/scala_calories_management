@@ -5,11 +5,12 @@ import com.app.model.{Meal, User}
 import org.bson.codecs.configuration.CodecRegistries.{fromProviders, fromRegistries}
 import org.bson.codecs.configuration.CodecRegistry
 import org.mongodb.scala.MongoClient.DEFAULT_CODEC_REGISTRY
-import org.mongodb.scala.bson.ObjectId
 import org.mongodb.scala.bson.codecs.Macros._
-import org.mongodb.scala.{MongoClient, MongoCollection, MongoDatabase}
+import org.mongodb.scala.model.Filters.{and, equal}
+import org.mongodb.scala.{MongoClient, MongoCollection, MongoDatabase, result}
 
 import java.time.LocalDateTime
+import scala.concurrent.Future
 
 object DaoImpl {
   val mongoClient: MongoClient = MongoClient("mongodb://localhost:27017")
@@ -20,26 +21,27 @@ case class MealDaoImpl() extends MealDao {
   val db: MongoDatabase = mongoClient.getDatabase("calories_management").withCodecRegistry(codecRegistry)
   val mealCollection: MongoCollection[Meal] = db.getCollection("meals")
 
-  override def getOne(id: Int, userId: Int): Meal = {
-//    mealCollection.find(equal("_id", id))
-    ???
+  override def getOne(id: Int, userId: Int): Future[Seq[Meal]] = {
+    mealCollection.find(and(equal("_id", id), equal("userId", userId))).toFuture()
   }
 
-  override def delete(id: Int, userId: Int): Unit = ???
+  override def delete(id: Int, userId: Int): Future[result.DeleteResult]  = {
+    mealCollection.deleteOne(and(equal("_id", id), equal("userId", userId))).toFuture()
+  }
 
-  override def getAll(userId: Int): List[Meal] = {
-//    mealCollection.find()
-    ???
+  override def getAll(userId: Int): Future[Seq[Meal]] = {
+    mealCollection.find().toFuture()
   }
 
   override def getBetweenDates(startDateTime: LocalDateTime, endDateTime: LocalDateTime, userId: Int): List[Meal] = ???
 
-  override def create(meal: Meal, userId: ObjectId): Meal = {
-    mealCollection.insertOne(meal)
-    meal
+  override def create(meal: Meal): Future[result.InsertOneResult] = {
+    mealCollection.insertOne(meal).toFuture()
   }
 
-  override def update(meal: Meal, userId: Int): Unit = ???
+  override def update(meal: Meal, userId: Int): Future[Meal] = {
+    mealCollection.findOneAndReplace(and(equal("_id", meal._id), equal("userId", userId)), meal).toFuture()
+  }
 }
 
 case class UserDaoImpl() extends UserDao {
@@ -48,15 +50,27 @@ case class UserDaoImpl() extends UserDao {
   val db: MongoDatabase = mongoClient.getDatabase("calories_management").withCodecRegistry(codecRegistry)
   val userCollection: MongoCollection[User] = db.getCollection("users")
 
-  override def getAll: List[User] = ???
+  override def getAll: Future[Seq[User]] = {
+    userCollection.find().toFuture()
+  }
 
-  override def getByEmail(email: String): User = ???
+  override def getByEmail(email: String): Future[Seq[User]] = {
+    userCollection.find(equal("email", email)).toFuture()
+  }
 
-  override def getOne(id: Int): User = ???
+  override def getOne(id: Int): Future[Seq[User]] = {
+    userCollection.find(equal("_id", id)).toFuture()
+  }
 
-  override def delete(id: Int): Unit = ???
+  override def delete(id: Int): Future[result.DeleteResult] = {
+    userCollection.deleteOne(equal("_id", id)).toFuture()
+  }
 
-  override def update(user: User): Unit = ???
+  override def update(user: User): Future[User] = {
+    userCollection.findOneAndReplace(equal("_id", user._id), user).toFuture()
+  }
 
-  override def create(user: User): User = ???
+  override def create(user: User): Future[result.InsertOneResult] = {
+    userCollection.insertOne(user).toFuture()
+  }
 }

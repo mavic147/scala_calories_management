@@ -1,28 +1,29 @@
 package com.app.dao
 
 import com.app.model.{Meal, User}
-import org.mongodb.scala.bson.ObjectId
+import org.mongodb.scala.result
 
 import java.time.LocalDateTime
+import scala.concurrent.Future
 
 trait MealDao {
 
-  def getOne(id: Int, userId: Int): Meal
-  def delete(id: Int, userId: Int): Unit
-  def getAll(userId: Int): List[Meal]
+  def getOne(id: Int, userId: Int): Future[Seq[Meal]]
+  def delete(id: Int, userId: Int): Future[result.DeleteResult]
+  def getAll(userId: Int): Future[Seq[Meal]]
   def getBetweenDates(startDateTime: LocalDateTime, endDateTime: LocalDateTime, userId: Int): List[Meal]
-  def create(meal: Meal, userId: ObjectId): Meal
-  def update(meal: Meal, userId: Int): Unit
+  def create(meal: Meal): Future[result.InsertOneResult]
+  def update(meal: Meal, userId: Int): Future[Meal]
 }
 
 trait UserDao {
 
-  def getAll: List[User]
-  def getByEmail(email: String): User
-  def getOne(id: Int): User
-  def delete(id :Int): Unit
-  def update(user: User): Unit
-  def create(user: User): User
+  def getAll: Future[Seq[User]]
+  def getByEmail(email: String): Future[Seq[User]]
+  def getOne(id: Int): Future[Seq[User]]
+  def delete(id :Int): Future[result.DeleteResult]
+  def update(user: User):Future[User]
+  def create(user: User): Future[result.InsertOneResult]
 
 }
 
