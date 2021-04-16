@@ -1,5 +1,4 @@
 db.users.remove({})
-db.user_roles.remove({})
 db.meals.remove({})
 
 //Обязательно раскоментить при накате!!!
@@ -7,13 +6,8 @@ db.meals.remove({})
 db.createCollection("users")
 userId = ObjectId()
 adminId = ObjectId()
-db.users.insertMany([{_id:userId, name: "UserAlice", email: "user@yandex.ru", password: "user"},
-    {_id:adminId, name: "AdminMark", email: "admin@gmail.com", password: "admin"}])
-
-db.createCollection("user_roles")
-db.user_roles.insertMany([{role: "User", user_id:userId},
-    {role: "Admin", user_id:adminId},
-    {role: "User", user_id:adminId}])
+db.users.insertMany([{_id:userId, name: "UserAlice", email: "user@yandex.ru", password: "user", roles:["User"]},
+    {_id:adminId, name: "AdminMark", email: "admin@gmail.com", password: "admin", roles:["Admin", "User"]}])
 
 db.createCollection("meals")
 db.meals.insertMany([{
