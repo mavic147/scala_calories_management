@@ -7,16 +7,20 @@ import org.bson.codecs.configuration.CodecRegistry
 import org.mongodb.scala.MongoClient.DEFAULT_CODEC_REGISTRY
 import org.mongodb.scala.bson.codecs.Macros._
 import org.mongodb.scala.model.Filters.{and, equal}
+import org.mongodb.scala.result.InsertOneResult
 import org.mongodb.scala.{MongoClient, MongoCollection, MongoDatabase, result}
 
 import java.time.LocalDateTime
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import scala.util.{Failure, Success}
 
 object DaoImpl {
   val mongoClient: MongoClient = MongoClient("mongodb://localhost:27017")
 }
 
 case class MealDaoImpl() extends MealDao {
+
   val codecRegistry: CodecRegistry = fromRegistries(fromProviders(classOf[Meal]), DEFAULT_CODEC_REGISTRY)
   val db: MongoDatabase = mongoClient.getDatabase("calories_management").withCodecRegistry(codecRegistry)
   val mealCollection: MongoCollection[Meal] = db.getCollection("meals")
@@ -29,14 +33,18 @@ case class MealDaoImpl() extends MealDao {
     mealCollection.deleteOne(and(equal("_id", id), equal("userId", userId))).toFuture()
   }
 
-  override def getAll(userId: Int): Future[Seq[Meal]] = {
+  override def getAll(userId: Int): Unit = {
     mealCollection.find().toFuture()
   }
 
   override def getBetweenDates(startDateTime: LocalDateTime, endDateTime: LocalDateTime, userId: Int): List[Meal] = ???
 
-  override def create(meal: Meal): Future[result.InsertOneResult] = {
-    mealCollection.insertOne(meal).toFuture()
+  override def create(meal: Meal): Unit = {
+    val createOp = mealCollection.insertOne(meal).toFuture()
+    createOp.onComplete {
+      case Success(result: InsertOneResult) => println(result)
+      case Failure(ex: Exception) => println(s"Operation failed with $ex")
+    }
   }
 
   override def update(meal: Meal, userId: Int): Future[Meal] = {

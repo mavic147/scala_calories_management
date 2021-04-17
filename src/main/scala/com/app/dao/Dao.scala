@@ -10,9 +10,9 @@ trait MealDao {
 
   def getOne(id: Int, userId: Int): Future[Seq[Meal]]
   def delete(id: Int, userId: Int): Future[result.DeleteResult]
-  def getAll(userId: Int): Future[Seq[Meal]]
+  def getAll(userId: Int): Unit
   def getBetweenDates(startDateTime: LocalDateTime, endDateTime: LocalDateTime, userId: Int): List[Meal]
-  def create(meal: Meal): Future[result.InsertOneResult]
+  def create(meal: Meal): Unit
   def update(meal: Meal, userId: Int): Future[Meal]
 }
 
