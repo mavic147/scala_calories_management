@@ -13,7 +13,7 @@ object Meal {
 case class Meal(_id: ObjectId, dateTime: LocalDateTime, description: String, calories: Int, userId: ObjectId) {
 
   override def toString: String = s"Meal {id= ${_id}, dateTime= ${dateTime}, description= ${description}, " +
-    s"calories= ${calories}"
+    s"calories= ${calories}}"
 }
 
 object User {

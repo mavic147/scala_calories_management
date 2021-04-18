@@ -7,8 +7,8 @@ db.meals.createIndex({"userId": 1, "dateTime": 1}, {unique: true})
 
 // use calories_management
 db.createCollection("users")
-user_id = ObjectId()
-admin_id = ObjectId()
+let user_id = new ObjectId()
+let admin_id = new ObjectId()
 db.users.insertMany([{_id: user_id, name: "UserAlice", email: "user@yandex.ru", password: "user", roles: ["User"]},
     {_id: admin_id, name: "AdminMark", email: "admin@gmail.com", password: "admin", roles: ["Admin", "User"]}])
 

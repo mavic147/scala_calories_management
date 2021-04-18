@@ -40,10 +40,12 @@ case class MealDaoImpl() extends MealDao {
 
   override def getAll(userId: ObjectId): Unit = {
     val getAllOp = mealCollection.find(equal("userId", userId)).toFuture()
-    getAllOp.onComplete {
-      case Success(result: FindObservable[Meal]) => println(result)
-      case Failure(ex: Exception) => println(s"Operation failed with $ex")
-    }
+//    getAllOp.onComplete {
+//      case Success(result: Seq[Meal]) => result
+//      case Failure(ex: Exception) => println(s"Operation failed with $ex")
+//    }
+//    val result = Await.result(getAllOp, Duration.Inf)
+//    result
   }
 
   override def getBetweenDates(startDateTime: LocalDateTime, endDateTime: LocalDateTime, userId: ObjectId): List[Meal] = ???
