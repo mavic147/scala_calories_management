@@ -5,10 +5,11 @@ import com.app.model.{Meal, User}
 import org.bson.codecs.configuration.CodecRegistries.{fromProviders, fromRegistries}
 import org.bson.codecs.configuration.CodecRegistry
 import org.mongodb.scala.MongoClient.DEFAULT_CODEC_REGISTRY
+import org.mongodb.scala.bson.ObjectId
 import org.mongodb.scala.bson.codecs.Macros._
 import org.mongodb.scala.model.Filters.{and, equal}
 import org.mongodb.scala.result.InsertOneResult
-import org.mongodb.scala.{MongoClient, MongoCollection, MongoDatabase, result}
+import org.mongodb.scala.{FindObservable, MongoClient, MongoCollection, MongoDatabase, result}
 
 import java.time.LocalDateTime
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -25,29 +26,37 @@ case class MealDaoImpl() extends MealDao {
   val db: MongoDatabase = mongoClient.getDatabase("calories_management").withCodecRegistry(codecRegistry)
   val mealCollection: MongoCollection[Meal] = db.getCollection("meals")
 
-  override def getOne(id: Int, userId: Int): Future[Seq[Meal]] = {
-    mealCollection.find(and(equal("_id", id), equal("userId", userId))).toFuture()
-  }
-
-  override def delete(id: Int, userId: Int): Future[result.DeleteResult]  = {
-    mealCollection.deleteOne(and(equal("_id", id), equal("userId", userId))).toFuture()
-  }
-
-  override def getAll(userId: Int): Unit = {
-    mealCollection.find().toFuture()
-  }
-
-  override def getBetweenDates(startDateTime: LocalDateTime, endDateTime: LocalDateTime, userId: Int): List[Meal] = ???
-
-  override def create(meal: Meal): Unit = {
-    val createOp = mealCollection.insertOne(meal).toFuture()
-    createOp.onComplete {
-      case Success(result: InsertOneResult) => println(result)
+  override def getOne(id: ObjectId, userId: ObjectId): Unit = {
+    val getOneOp = mealCollection.find(and(equal("_id", id), equal("userId", userId))).toFuture()
+    getOneOp.onComplete {
+      case Success(result: FindObservable[Meal]) => println(result)
       case Failure(ex: Exception) => println(s"Operation failed with $ex")
     }
   }
 
-  override def update(meal: Meal, userId: Int): Future[Meal] = {
+  override def delete(id: ObjectId, userId: ObjectId): Future[result.DeleteResult]  = {
+    mealCollection.deleteOne(and(equal("_id", id), equal("userId", userId))).toFuture()
+  }
+
+  override def getAll(userId: ObjectId): Unit = {
+    val getAllOp = mealCollection.find(equal("userId", userId)).toFuture()
+    getAllOp.onComplete {
+      case Success(result: FindObservable[Meal]) => println(result)
+      case Failure(ex: Exception) => println(s"Operation failed with $ex")
+    }
+  }
+
+  override def getBetweenDates(startDateTime: LocalDateTime, endDateTime: LocalDateTime, userId: ObjectId): List[Meal] = ???
+
+  override def create(meal: Meal): Unit = {
+    val createOp = mealCollection.insertOne(meal).toFuture()
+    createOp.onComplete {
+      case Success(result: InsertOneResult) => result
+      case Failure(ex: Exception) => println(s"Operation failed with $ex")
+    }
+  }
+
+  override def update(meal: Meal, userId: ObjectId): Future[Meal] = {
     mealCollection.findOneAndReplace(and(equal("_id", meal._id), equal("userId", userId)), meal).toFuture()
   }
 }

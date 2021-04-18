@@ -1,15 +1,13 @@
 import com.app.dao.MealDaoImpl
-import com.app.model.{Meal, Role, User}
-
-import java.time.{LocalDateTime, Month}
-import java.util.Date
 
 object MainTest extends App {
 
   val mealDaoImpl: MealDaoImpl = MealDaoImpl()
-  val createdUser: User = User("Andrew", "drew@gmail.com", "12345", 1900, new Date(), List(Role.User))
-  val createdMeal: Meal = Meal(LocalDateTime.of(2021, Month.JANUARY, 30, 14, 0,
-    0), "Brunch", 596, createdUser._id)
-  mealDaoImpl.create(createdMeal)
+//  val createdUser: User = User("Andrew", "drew@gmail.com", "12345", 1900, new Date(), List(Role.User))
+//  val createdMeal: Meal = Meal(LocalDateTime.of(2021, Month.MARCH, 2, 15, 0,
+//    0), "Salad and coffee", 890, createdUser._id)
+//  mealDaoImpl.create(createdMeal)
+//  mealDaoImpl.getAll(new ObjectId("607c1a494d543b28405318ac"))
+//  mealDaoImpl.getOne(new ObjectId("607c47a6f0d4f87a930f7779"), new ObjectId("607c47a40ff3764c34a30196"))
   Thread.sleep(1000)
 }
