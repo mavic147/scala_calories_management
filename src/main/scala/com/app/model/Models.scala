@@ -11,7 +11,7 @@ object Meal {
     Meal(new ObjectId(), dateTime, description, calories, userId)
 }
 
-case class Meal(_id: ObjectId, dateTime: LocalDateTime, description: String, calories: Int, userId: ObjectId) {
+case class Meal(var _id: ObjectId, dateTime: LocalDateTime, description: String, calories: Int, userId: ObjectId) {
 
   override def toString: String = s"Meal {id= ${_id}, dateTime= ${dateTime}, description= ${description}, " +
     s"calories= ${calories}}"
@@ -30,7 +30,7 @@ object User {
     User(new ObjectId(), name, email, password, caloriesPerDay, registered, roles)
 }
 
-case class User(_id:ObjectId, name:String, email:String, password:String, caloriesPerDay:Int, registered:Date, roles: List[Role]) {
+case class User(var _id:ObjectId, name:String, email:String, password:String, caloriesPerDay:Int, registered:Date, roles: List[Role]) {
 
   override def toString: String = s"User {id= ${_id}, name= ${name}, email= ${email}, caloriesPerDay= ${caloriesPerDay}}"
 }
