@@ -5,7 +5,7 @@ import com.app.to.MealTo
 
 import java.time.{LocalDate, LocalTime}
 
-abstract class MealsUtil() {
+class MealsUtil {
 
   val dateTimeUtil = new DateTimeUtil
 

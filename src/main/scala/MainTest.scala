@@ -1,6 +1,7 @@
 import com.app.model.{Meal, Role, User}
+import com.app.util.MealsUtil
 
-import java.time.{LocalDateTime, Month}
+import java.time.{LocalDateTime, LocalTime, Month}
 import java.util.Date
 
 object MainTest extends App {
@@ -13,11 +14,14 @@ object MainTest extends App {
     0), "Doughnut & coffee", 1050, createdUser._id)
   val createdMeal3: Meal = Meal(LocalDateTime.of(2021, Month.MARCH, 3, 19, 0,
     0), "Porridge", 300, createdUser._id)
+  val createdMeal4: Meal = Meal(LocalDateTime.of(2021, Month.MARCH, 3, 13, 0,
+    0), "Fish & Chips", 800, createdUser._id)
 
   //тестирование dao-классов
-//    mealDaoImpl.create(createdMeal)
+//    mealDaoImpl.create(createdMeal1)
 //  println(mealDaoImpl.getAll(new ObjectId("607c966a0dd06493cc480fd1")))
 //  mealDaoImpl.getOne(new ObjectId("607c47a6f0d4f87a930f7779"), new ObjectId("607c47a40ff3764c34a30196"))
+//  Thread.sleep(1000)
 
   //тестирование лямбд для создания и фильтрации MealTo
 //  val meals: List[Meal] = List(createdMeal1, createdMeal2, createdMeal3)
@@ -30,5 +34,10 @@ object MainTest extends App {
 //    mealsByDate1.map { x => (x._1, x._2.map(meal => meal.calories).sum) }
 //  }
 
-  Thread.sleep(1000)
+  //тестирование dateTimeUtil & mealsUtil
+  val mealsUtil = new MealsUtil
+  val meals: List[Meal] = List(createdMeal1, createdMeal2, createdMeal3, createdMeal4)
+  //  println(mealsUtil.getTos(meals, 1500))
+  println(mealsUtil.getFilteredTos(meals, 1500, LocalTime.of(10, 0, 0),
+    LocalTime.of(16, 0, 0)))
 }
