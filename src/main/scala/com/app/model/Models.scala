@@ -3,7 +3,7 @@ package com.app.model
 import com.app.model.Role.Role
 import org.mongodb.scala.bson.ObjectId
 
-import java.time.{LocalDate, LocalDateTime}
+import java.time.{LocalDate, LocalDateTime, LocalTime}
 import java.util.Date
 
 object Meal {
@@ -18,6 +18,10 @@ case class Meal(_id: ObjectId, dateTime: LocalDateTime, description: String, cal
 
   def getDate: LocalDate = {
     this.dateTime.toLocalDate
+  }
+
+  def getTime: LocalTime = {
+    this.dateTime.toLocalTime
   }
 }
 

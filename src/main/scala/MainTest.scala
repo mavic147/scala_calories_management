@@ -1,4 +1,3 @@
-import com.app.dao.MealDaoImpl
 import com.app.model.{Meal, Role, User}
 
 import java.time.{LocalDateTime, Month}
@@ -6,7 +5,7 @@ import java.util.Date
 
 object MainTest extends App {
 
-  val mealDaoImpl: MealDaoImpl = MealDaoImpl()
+//  val mealDaoImpl: MealDaoImpl = MealDaoImpl()
   val createdUser: User = User("Andrew", "drew@gmail.com", "12345", 1900, new Date(), List(Role.User))
   val createdMeal1: Meal = Meal(LocalDateTime.of(2021, Month.MARCH, 2, 15, 0,
     0), "Salad and coffee", 890, createdUser._id)

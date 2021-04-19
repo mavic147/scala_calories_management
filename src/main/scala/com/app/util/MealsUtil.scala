@@ -3,16 +3,18 @@ package com.app.util
 import com.app.model.Meal
 import com.app.to.MealTo
 
-import java.time.LocalDate
+import java.time.{LocalDate, LocalTime}
 
 abstract class MealsUtil() {
 
-  def getTos(): List[MealTo] = {
-    ???
+  val dateTimeUtil = new DateTimeUtil
+
+  def getTos(meals: List[Meal], caloriesPerDay: Int): List[MealTo] = {
+    filterByPredicate(meals, caloriesPerDay, _ => true)
   }
 
-  def getFilteredTos(): List[MealTo] = {
-    ???
+  def getFilteredTos(meals: List[Meal], caloriesPerDay: Int, startTime: LocalTime, endTime: LocalTime): List[MealTo] = {
+    filterByPredicate(meals, caloriesPerDay, meal => dateTimeUtil.isBetweenHalfOpen(meal.getTime, startTime, endTime))
   }
 
   def filterByPredicate(meals: List[Meal], caloriesPerDay: Int, f: Meal => Boolean): List[MealTo] = {
