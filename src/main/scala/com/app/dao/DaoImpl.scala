@@ -7,7 +7,7 @@ import org.bson.codecs.configuration.CodecRegistry
 import org.mongodb.scala.MongoClient.DEFAULT_CODEC_REGISTRY
 import org.mongodb.scala.bson.ObjectId
 import org.mongodb.scala.bson.codecs.Macros._
-import org.mongodb.scala.model.Filters.{and, equal}
+import org.mongodb.scala.model.Filters.{and, equal, gte, lt}
 import org.mongodb.scala.{MongoClient, MongoCollection, MongoDatabase, result}
 
 import java.time.LocalDateTime
@@ -36,6 +36,8 @@ case class MealDaoImpl() extends MealDao {
 
   override def delete(id: ObjectId, userId: ObjectId): Future[result.DeleteResult]  = {
     mealCollection.deleteOne(and(equal("_id", id), equal("userId", userId))).toFuture()
+
+//    Await.result(deleteOp, Duration.Inf)
   }
 
   override def getAll(userId: ObjectId): Future[Seq[Meal]] = {
@@ -50,7 +52,10 @@ case class MealDaoImpl() extends MealDao {
   }
 
   override def getBetweenDates(startDateTime: LocalDateTime, endDateTime: LocalDateTime, userId: ObjectId): Future[Seq[Meal]] = {
-    ???
+    mealCollection.find(and(gte("dateTime", startDateTime), lt("dateTime", endDateTime),
+      equal("userId", userId))).toFuture()
+
+//    Await.result(getBetweenDatesOp, Duration.Inf)
   }
 
   override def create(meal: Meal): Future[result.InsertOneResult] = {
