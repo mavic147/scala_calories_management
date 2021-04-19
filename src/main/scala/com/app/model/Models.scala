@@ -2,7 +2,8 @@ package com.app.model
 
 import com.app.model.Role.Role
 import org.mongodb.scala.bson.ObjectId
-import java.time.LocalDateTime
+
+import java.time.{LocalDate, LocalDateTime}
 import java.util.Date
 
 object Meal {
@@ -14,6 +15,10 @@ case class Meal(_id: ObjectId, dateTime: LocalDateTime, description: String, cal
 
   override def toString: String = s"Meal {id= ${_id}, dateTime= ${dateTime}, description= ${description}, " +
     s"calories= ${calories}}"
+
+  def getDate: LocalDate = {
+    this.dateTime.toLocalDate
+  }
 }
 
 object User {
