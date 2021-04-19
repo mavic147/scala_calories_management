@@ -9,11 +9,11 @@ import scala.concurrent.Future
 
 trait MealDao {
 
-  def getOne(id: ObjectId, userId: ObjectId): Unit
+  def getOne(id: ObjectId, userId: ObjectId): Future[Seq[Meal]]
   def delete(id: ObjectId, userId: ObjectId): Future[result.DeleteResult]
-  def getAll(userId: ObjectId): Unit
-  def getBetweenDates(startDateTime: LocalDateTime, endDateTime: LocalDateTime, userId: ObjectId): List[Meal]
-  def create(meal: Meal): Unit
+  def getAll(userId: ObjectId): Future[Seq[Meal]]
+  def getBetweenDates(startDateTime: LocalDateTime, endDateTime: LocalDateTime, userId: ObjectId): Future[Seq[Meal]]
+  def create(meal: Meal): Future[result.InsertOneResult]
   def update(meal: Meal, userId: ObjectId): Future[Meal]
 }
 
@@ -21,8 +21,8 @@ trait UserDao {
 
   def getAll: Future[Seq[User]]
   def getByEmail(email: String): Future[Seq[User]]
-  def getOne(id: Int): Future[Seq[User]]
-  def delete(id :Int): Future[result.DeleteResult]
+  def getOne(id: ObjectId): Future[Seq[User]]
+  def delete(id :ObjectId): Future[result.DeleteResult]
   def update(user: User):Future[User]
   def create(user: User): Future[result.InsertOneResult]
 
