@@ -13,8 +13,8 @@ object Meal {
 
 case class Meal(var _id: ObjectId, dateTime: LocalDateTime, description: String, calories: Int, userId: ObjectId) {
 
-  override def toString: String = s"Meal {id= $_id, dateTime= $dateTime, description= $description, " +
-    s"calories= $calories}"
+  override def toString: String = s"Meal {id= ${_id}, dateTime= ${dateTime}, description= ${description}, " +
+    s"calories= ${calories}}"
 
   def getDate: LocalDate = {
     this.dateTime.toLocalDate
@@ -32,7 +32,7 @@ object User {
 
 case class User(var _id:ObjectId, name:String, email:String, password:String, caloriesPerDay:Int, registered:Date, roles: List[Role]) {
 
-  override def toString: String = s"User {id= $_id, name= $name, email= $email, caloriesPerDay= $caloriesPerDay}"
+  override def toString: String = s"User {id= ${_id}, name= ${name}, email= ${email}, caloriesPerDay= ${caloriesPerDay}}"
 }
 
 object Role extends Enumeration {
