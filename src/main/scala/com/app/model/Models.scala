@@ -21,7 +21,12 @@ case class Meal(@BsonProperty("_id") var id: String, dateTime: LocalDateTime, de
 
   def userIdToInt = Map ("userId" -> userId.toInt)
 
-  def incrementId(): Int = id.toInt + 1
+  var idCounter = 100011
+
+  def incrementId(): Int = {
+    idCounter = idCounter + 1
+    idCounter
+  }
 
   def getDate: LocalDate = {
     this.dateTime.toLocalDate
