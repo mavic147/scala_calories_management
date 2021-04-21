@@ -3,7 +3,7 @@ package com.app
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.stream.ActorMaterializer
-import com.app.web.routes.MealRoute.mealRoute
+import com.app.web.routes.MealRoute.route
 import org.slf4j.{Logger, LoggerFactory}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -17,16 +17,13 @@ object HttpServer {
 
     val log: Logger = LoggerFactory.getLogger(this.getClass)
 
-    val port = 8080
+    val port = 8081
 
-    //  val bindingFuture =
-    //    Http().bindAndHandle(mealRoute, "localhost", port)
-
-    val bindingFuture = Http().newServerAt("localhost", 8080).bind(mealRoute)
+    val bindingFuture = Http().newServerAt("localhost", port).bind(route)
 
     log.info(s"Server started at the port $port")
 
-    println(s"Server online at http://localhost:8080/\nPress RETURN to stop...")
+    println(s"Server online at http://localhost:8081/\nPress RETURN to stop...")
     StdIn.readLine() // let it run until user presses return
     bindingFuture
       .flatMap(_.unbind()) // trigger unbinding from the port
