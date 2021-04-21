@@ -27,6 +27,6 @@ class MealsUtil {
   }
 
   def createTo(meal: Meal, excess: Boolean): MealTo = {
-    MealTo(meal._id, meal.dateTime, meal.description, meal.calories, excess)
+    MealTo(meal.id, meal.dateTime, meal.description, meal.calories, excess)
   }
 }

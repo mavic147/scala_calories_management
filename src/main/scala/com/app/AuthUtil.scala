@@ -1,17 +1,15 @@
 package com.app
 
-import org.mongodb.scala.bson.ObjectId
-
 case class AuthUtil() {
   private val DEFAULT_CALORIES_PER_DAY: Int = 2000
   //change whenever db script is executed
-  private val FAKE_AUTH_ID: ObjectId = new ObjectId("607c966a0dd06493cc480fd1")
+  private val FAKE_AUTH_ID: String = "6080108a7b5228092ac51dd6"
 
   private var id = FAKE_AUTH_ID
 
-  val authUserId: ObjectId = id
+  val authUserId: String = id
 
-  def setAuthUserId(id: ObjectId): Unit = {
+  def setAuthUserId(id: String): Unit = {
     this.id = id
   }
 

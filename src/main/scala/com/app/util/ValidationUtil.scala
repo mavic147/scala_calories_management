@@ -31,10 +31,10 @@ case class ValidationUtil() {
   def isNew[T](obj: T): Boolean = {
     if (obj.getClass.isInstance(Meal)) {
       val meal: Meal = getMealInstance(obj)
-      meal._id == null
+      meal.id == null
     } else {
       val user: User = getUserInstance(obj)
-      user._id == null
+      user.id == null
     }
   }
 
@@ -48,15 +48,15 @@ case class ValidationUtil() {
     }
   }
 
-  def checkIdConsistency[T](obj: T, id: ObjectId): Unit = {
+  def checkIdConsistency[T](obj: T, id: String): Unit = {
     if (obj.getClass.isInstance(Meal)) {
-      val meal: Meal = getMealInstance(obj)
-      if (isNew(meal)) meal._id = id
-      else if (meal._id != id) throw new IllegalArgumentException(meal + " must be with id=" + id)
+      var meal: Meal = getMealInstance(obj)
+      if (isNew(meal)) meal.id = id
+      else if (meal.id != id) throw new IllegalArgumentException(meal + " must be with id=" + id)
     } else {
-      val user: User = getUserInstance(obj)
-      if (isNew(user)) user._id = id
-      else if (user._id != id) throw new IllegalArgumentException(user + " must be with id=" + id)
+      var user: User = getUserInstance(obj)
+      if (isNew(user)) user.id = id
+      else if (user.id != id) throw new IllegalArgumentException(user + " must be with id=" + id)
     }
   }
 

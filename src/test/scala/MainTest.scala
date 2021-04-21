@@ -7,15 +7,15 @@ import java.util.Date
 object MainTest extends App {
 
   val mealDaoImpl: MealDaoImpl = MealDaoImpl()
-  val createdUser: User = User("Andrew", "drew@gmail.com", "12345", 1900, new Date(), List(Role.User))
-  val createdMeal1: Meal = Meal(LocalDateTime.of(2021, Month.MARCH, 2, 15, 0,
-    0), "Salad and coffee", 890, createdUser._id)
-  val createdMeal2: Meal = Meal(LocalDateTime.of(2021, Month.MARCH, 2, 16, 0,
-    0), "Doughnut & coffee", 1050, createdUser._id)
-  val createdMeal3: Meal = Meal(LocalDateTime.of(2021, Month.MARCH, 3, 19, 0,
-    0), "Porridge", 300, createdUser._id)
-  val createdMeal4: Meal = Meal(LocalDateTime.of(2021, Month.MARCH, 3, 13, 0,
-    0), "Fish & Chips", 800, createdUser._id)
+  val createdUser: User = User("607c966a0dd06493cc480fd1", "Andrew", "drew@gmail.com", "12345", 1900, new Date(), Set(Role.User))
+  val createdMeal1: Meal = Meal("3", LocalDateTime.of(2021, Month.MARCH, 2, 15, 0,
+    0), "Salad and coffee", 890, createdUser.id)
+  val createdMeal2: Meal = Meal("607c47a6f0d4f87a930f7780", LocalDateTime.of(2021, Month.MARCH, 2, 16, 0,
+    0), "Doughnut & coffee", 1050, createdUser.id)
+  val createdMeal3: Meal = Meal("607c47a6f0d4f87a930f7781", LocalDateTime.of(2021, Month.MARCH, 3, 19, 0,
+    0), "Porridge", 300, createdUser.id)
+  val createdMeal4: Meal = Meal("607c47a6f0d4f87a930f7782", LocalDateTime.of(2021, Month.MARCH, 3, 13, 0,
+    0), "Fish & Chips", 800, createdUser.id)
 
   //тестирование dao-классов
   //      mealDaoImpl.create(createdMeal1)

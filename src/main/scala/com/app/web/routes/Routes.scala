@@ -29,16 +29,16 @@ object MealRoute {
   val route: Route = concat(
     {
       path("topjava/users") {
-//        post {
-//          parameter("userId") { userId =>
-//            authUtil.setAuthUserId(new ObjectId(userId)
-//
-//          }
-//        }
-//        ,
+        //        post {
+        //          parameter("userId") { userId =>
+        //            authUtil.setAuthUserId(new ObjectId(userId)
+        //
+        //          }
+        //        }
+        //        ,
         get {
           implicit val userFormat: AnyRef with Formats = Serialization.formats(ShortTypeHints(List(classOf[User])))
-          val usersList = userDaoImpl.getAll
+          val usersList = userDaoImpl.getAll.map { user => user.toList.map { each => each.idToInt}}
           complete(HttpEntity(ContentTypes.`application/json`, write(usersList)))
         }
       }
@@ -47,7 +47,7 @@ object MealRoute {
       get {
         implicit val mealToFormat: AnyRef with Formats = Serialization.formats(ShortTypeHints(List(classOf[MealTo])))
         val mealsList = mealDaoImpl.getAll(authUtil.authUserId).map {
-          meal => mealsUtil.getTos(meal.toList, authUtil.authUserCaloriesPerDay)
+          meal => mealsUtil.getTos(meal.toList, authUtil.authUserCaloriesPerDay).map { mealTo => mealTo.idToInt}
         }
         onComplete(mealsList) {
           case Success(value) => complete(HttpEntity(ContentTypes.`application/json`, write(value)))
