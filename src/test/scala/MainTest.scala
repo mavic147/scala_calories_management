@@ -1,21 +1,29 @@
+import akka.http.scaladsl.model.StatusCodes.InternalServerError
+import akka.http.scaladsl.model.{ContentTypes, HttpEntity}
+import akka.http.scaladsl.server.Directives._
 import com.app.dao.MealDaoImpl
-import com.app.model.{Meal, Role, User}
+import com.app.to.MealTo
+import com.app.util.MealsUtil
+import com.app.web.routes.MealRoute.authUtil
+import org.json4s.jackson.Serialization
+import org.json4s.jackson.Serialization.write
+import org.json4s.{Formats, ShortTypeHints}
 
-import java.time.{LocalDateTime, Month}
-import java.util.Date
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.util.{Failure, Success}
 
 object MainTest extends App {
 
   val mealDaoImpl: MealDaoImpl = MealDaoImpl()
-  val createdUser: User = User("607c966a0dd06493cc480fd1", "Andrew", "drew@gmail.com", "12345", 1900, new Date(), Set(Role.User))
-  val createdMeal1: Meal = Meal("3", LocalDateTime.of(2021, Month.MARCH, 2, 15, 0,
-    0), "Salad and coffee", 890, createdUser.id)
-  val createdMeal2: Meal = Meal("607c47a6f0d4f87a930f7780", LocalDateTime.of(2021, Month.MARCH, 2, 16, 0,
-    0), "Doughnut & coffee", 1050, createdUser.id)
-  val createdMeal3: Meal = Meal("607c47a6f0d4f87a930f7781", LocalDateTime.of(2021, Month.MARCH, 3, 19, 0,
-    0), "Porridge", 300, createdUser.id)
-  val createdMeal4: Meal = Meal("607c47a6f0d4f87a930f7782", LocalDateTime.of(2021, Month.MARCH, 3, 13, 0,
-    0), "Fish & Chips", 800, createdUser.id)
+//  val createdUser: User = User("607c966a0dd06493cc480fd1", "Andrew", "drew@gmail.com", "12345", 1900, new Date(), Set(Role.User))
+//  val createdMeal1: Meal = Meal("3", LocalDateTime.of(2021, Month.MARCH, 2, 15, 0,
+//    0), "Salad and coffee", 890, createdUser.id)
+//  val createdMeal2: Meal = Meal("607c47a6f0d4f87a930f7780", LocalDateTime.of(2021, Month.MARCH, 2, 16, 0,
+//    0), "Doughnut & coffee", 1050, createdUser.id)
+//  val createdMeal3: Meal = Meal("607c47a6f0d4f87a930f7781", LocalDateTime.of(2021, Month.MARCH, 3, 19, 0,
+//    0), "Porridge", 300, createdUser.id)
+//  val createdMeal4: Meal = Meal("607c47a6f0d4f87a930f7782", LocalDateTime.of(2021, Month.MARCH, 3, 13, 0,
+//    0), "Fish & Chips", 800, createdUser.id)
 
   //тестирование dao-классов
   //      mealDaoImpl.create(createdMeal1)
@@ -45,4 +53,24 @@ object MainTest extends App {
   //  println(mealsUtil.getTos(meals, 1500))
   //  println(mealsUtil.getFilteredTos(meals, 1500, LocalTime.of(10, 0, 0),
   //    LocalTime.of(16, 0, 0)))
+
+//  implicit val userFormat: AnyRef with Formats = Serialization.formats(ShortTypeHints(List(classOf[User])))
+//  val usersList = userDaoImpl.getAll.map { user => user.toList.map { each => each.idToInt } }
+//  onComplete(usersList) {
+//    case Success(value) => complete(HttpEntity(ContentTypes.`application/json`, write(value)))
+//    case Failure(ex) => complete(InternalServerError, s"An error occurred: ${ex.getMessage}")
+//  }
+
+
+  val mealsUtil = new MealsUtil()
+
+  implicit val mealToFormat: AnyRef with Formats = Serialization.formats(ShortTypeHints(List(classOf[MealTo])))
+  val mealsList = mealDaoImpl.getAll(authUtil.authUserId).map {
+    meal => mealsUtil.getTos(meal.toList, authUtil.authUserCaloriesPerDay).map { mealTo => mealTo.idToInt }
+  }
+  onComplete(mealsList) {
+    case Success(value) => complete(HttpEntity(ContentTypes.`application/json`, write(value)))
+    case Failure(ex) => complete(InternalServerError, s"An error occurred: ${ex.getMessage}")
+  }
+  println()
 }

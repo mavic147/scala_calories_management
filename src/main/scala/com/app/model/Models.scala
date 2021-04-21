@@ -1,7 +1,7 @@
 package com.app.model
 
 import com.app.model.Role.Role
-import org.mongodb.scala.bson.annotations.BsonProperty
+import org.bson.codecs.pojo.annotations.BsonId
 
 import java.time.{LocalDate, LocalDateTime, LocalTime}
 import java.util.Date
@@ -12,7 +12,7 @@ import java.util.Date
 //
 //}
 
-case class Meal(@BsonProperty("_id") var id: String, dateTime: LocalDateTime, description: String, calories: Int, userId: String) {
+case class Meal(@BsonId var id: String, dateTime: LocalDateTime, description: String, calories: Int, userId: String) {
 
   override def toString: String = s"Meal {id= ${id}, dateTime= ${dateTime}, description= ${description}, " +
     s"calories= ${calories}}"
@@ -42,7 +42,7 @@ case class Meal(@BsonProperty("_id") var id: String, dateTime: LocalDateTime, de
 //    User(new ObjectId(), name, email, password, caloriesPerDay, registered, roles)
 //}
 
-case class User(@BsonProperty("_id") var id: String, name:String, email:String, password:String, caloriesPerDay:Int, registered:Date, roles: Set[Role]) {
+case class User(@BsonId var id: String, name:String, email:String, password:String, caloriesPerDay:Int, registered:Date, roles: Set[Role]) {
 
   override def toString: String = s"User {id= ${id}, name= ${name}, email= ${email}, caloriesPerDay= ${caloriesPerDay}}"
 
