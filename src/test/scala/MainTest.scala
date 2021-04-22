@@ -1,9 +1,8 @@
-import com.app.dao.MealDaoImpl
-import com.app.to.MealTo
-import com.app.util.MealsUtil
-import com.app.web.routes.MealRoute.authUtil
-import org.json4s.jackson.Serialization
+import com.app.dao.{MealDaoImpl, UserDaoImpl}
+import com.app.model.User
 import org.json4s.{Formats, ShortTypeHints}
+import org.json4s.jackson.Serialization
+import org.json4s.jackson.Serialization.write
 
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
@@ -11,6 +10,7 @@ import scala.concurrent.duration.Duration
 object MainTest extends App {
 
   val mealDaoImpl: MealDaoImpl = MealDaoImpl()
+  val userDaoImpl: UserDaoImpl = UserDaoImpl()
 //  val createdUser: User = User("607c966a0dd06493cc480fd1", "Andrew", "drew@gmail.com", "12345", 1900, new Date(), Set(Role.User))
 //  val createdMeal1: Meal = Meal("3", LocalDateTime.of(2021, Month.MARCH, 2, 15, 0,
 //    0), "Salad and coffee", 890, createdUser.id)
@@ -57,23 +57,25 @@ object MainTest extends App {
 //    case Failure(ex) => complete(InternalServerError, s"An error occurred: ${ex.getMessage}")
 //  }
 
-
-  val mealsUtil = new MealsUtil()
-
-  implicit val mealToFormat: AnyRef with Formats = Serialization.formats(ShortTypeHints(List(classOf[MealTo])))
-
-  val allMeals = Await.result(mealDaoImpl.getAll(authUtil.authUserId), Duration.Inf)
-  println(allMeals)
-  val allMealsTo: List[MealTo] = mealsUtil.getTos(allMeals.toList, authUtil.authUserCaloriesPerDay)
-  println(allMealsTo.map {mealTo => mealTo.idToInt})
-
-//  val mealsList = mealDaoImpl.getAll(authUtil.authUserId).map {
-//    meal => mealsUtil.getTos(meal.toList, authUtil.authUserCaloriesPerDay).map { mealTo => mealTo.idToInt }
+//пример обработки meals!
+//  val mealsUtil = new MealsUtil()
+//  implicit val formats: AnyRef with Formats = {
+//    Serialization.formats(FullTypeHints(List(classOf[Meal])))
 //  }
+//  val allMeals = Await.result(mealDaoImpl.getAll(authUtil.authUserId), Duration.Inf)
+//  println(allMeals)
+//  val allMealsTo: List[MealTo] = mealsUtil.getTos(allMeals.toList, authUtil.authUserCaloriesPerDay)
+//  println(allMealsTo)
+//  val result = write(allMealsTo.map(mealTo => mealTo.toMap))
+//  val result = write(allMeals.map(meal => meal.toMap))
+//  println(result)
 
-//  onComplete(mealsList) {
-//    case Success(value) => complete(HttpEntity(ContentTypes.`application/json`, write(value)))
-//    case Failure(ex) => complete(InternalServerError, s"An error occurred: ${ex.getMessage}")
-//  }
+
+  implicit val userFormat: AnyRef with Formats = Serialization.formats(ShortTypeHints(List(classOf[User])))
+  val allUsers = Await.result(userDaoImpl.getAll, Duration.Inf)
+  println(allUsers)
+  println(write(allUsers))
+
+
   println()
 }
