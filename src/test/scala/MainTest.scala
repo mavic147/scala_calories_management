@@ -70,7 +70,7 @@ object MainTest extends App {
 //  val result = write(allMeals.map(meal => meal.toMap))
 //  println(result)
 
-
+//пример обработки users!
   implicit val userFormat: AnyRef with Formats = Serialization.formats(ShortTypeHints(List(classOf[User])))
   val allUsers = Await.result(userDaoImpl.getAll, Duration.Inf)
   println(allUsers)

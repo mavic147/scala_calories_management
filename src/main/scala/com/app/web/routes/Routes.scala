@@ -30,10 +30,19 @@ object MealRoute {
 //      path("topjava/users") {
 //        implicit val userFormat: AnyRef with Formats = Serialization.formats(ShortTypeHints(List(classOf[User])))
 //        val usersList = userDaoImpl.getAll
-//
+//        onComplete(usersList) {
+//          case Success(value) => complete(HttpEntity(ContentTypes.`application/json`, write(value.map(user => user.toMap))))
+//          case Failure(ex) => complete(InternalServerError, s"An error occurred: ${ex.getMessage}")
+//        }
 //      },
 //      path("topjava/meals") {
-//
+//        implicit val formats: AnyRef with Formats = Serialization.formats(ShortTypeHints(List(classOf[MealTo])))
+//        val mealsList = mealDaoImpl.getAll(authUtil.authUserId)
+//        onComplete(mealsList) {
+//          case Success(value) => complete(HttpEntity(ContentTypes.`application/json`,
+//            write(mealsUtil.getTos(value.toList, authUtil.authUserCaloriesPerDay).map(mealTo => mealTo.toMap))))
+//          case Failure(ex) => complete(InternalServerError, s"An error occurred: ${ex.getMessage}")
+//        }
 //      }
 //    }
 //  )
@@ -49,51 +58,7 @@ object MealRoute {
       }
       HttpResponse(entity = HttpEntity(ContentTypes.`application/json`, write(usersList)))
     }
-//    case HttpRequest(POST, Uri.Path("/topjava/users"), _, _, _) => {
-//
-//    }
-//    case HttpRequest(GET, Uri.Path("/topjava/meals"), _, _, _) => {
-//      implicit val mealToFormat: AnyRef with Formats = Serialization.formats(ShortTypeHints(List(classOf[MealTo])))
-//      val mealsList = mealDaoImpl.getAll(authUtil.authUserId).map {
-//        meal => mealsUtil.getTos(meal.toList, authUtil.authUserCaloriesPerDay).map { mealTo => mealTo.idToInt }
-//      }
-//      onComplete(mealsList) {
-//        case Success(value) => complete(HttpEntity(ContentTypes.`application/json`, write(value)))
-//        case Failure(ex) => complete(InternalServerError, s"An error occurred: ${ex.getMessage}")
-//      }
-//    }
   }
-
-//  val route: Route = concat(
-//    {
-//      path("topjava/users") {
-//        //        post {
-//        //          parameter("userId") { userId =>
-//        //            authUtil.setAuthUserId(new ObjectId(userId)
-//        //
-//        //          }
-//        //        }
-//        //        ,
-//        get {
-//          implicit val userFormat: AnyRef with Formats = Serialization.formats(ShortTypeHints(List(classOf[User])))
-//          val usersList = userDaoImpl.getAll.map { user => user.toList.map { each => each.idToInt}}
-//          complete(HttpEntity(ContentTypes.`application/json`, write(usersList)))
-//        }
-//      }
-//    },
-//    path("topjava/meals") {
-//      get {
-//        implicit val mealToFormat: AnyRef with Formats = Serialization.formats(ShortTypeHints(List(classOf[MealTo])))
-//        val mealsList = mealDaoImpl.getAll(authUtil.authUserId).map {
-//          meal => mealsUtil.getTos(meal.toList, authUtil.authUserCaloriesPerDay).map { mealTo => mealTo.idToInt}
-//        }
-//        onComplete(mealsList) {
-//          case Success(value) => complete(HttpEntity(ContentTypes.`application/json`, write(value)))
-//          case Failure(ex) => complete(InternalServerError, s"An error occurred: ${ex.getMessage}")
-//        }
-//      }
-//    }
-//  )
 }
 
 object UserRoot {}
