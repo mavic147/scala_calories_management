@@ -3,7 +3,7 @@ package com.app
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.stream.ActorMaterializer
-import com.app.web.routes.MealRoute.requestHandler
+import com.app.web.routes.MealRoute.route
 import org.slf4j.{Logger, LoggerFactory}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -20,7 +20,7 @@ object HttpServer {
     val port = 8081
 
 //    val bindingFuture = Http().newServerAt("localhost", port).bind(route)
-    val bindingFuture = Http().newServerAt("localhost", port).bindSync(requestHandler)
+    val bindingFuture = Http().newServerAt("localhost", port).bind(route)
 
     log.info(s"Server started at the port $port")
 
