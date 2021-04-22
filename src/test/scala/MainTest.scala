@@ -1,16 +1,12 @@
-import akka.http.scaladsl.model.StatusCodes.InternalServerError
-import akka.http.scaladsl.model.{ContentTypes, HttpEntity}
-import akka.http.scaladsl.server.Directives._
 import com.app.dao.MealDaoImpl
 import com.app.to.MealTo
 import com.app.util.MealsUtil
 import com.app.web.routes.MealRoute.authUtil
 import org.json4s.jackson.Serialization
-import org.json4s.jackson.Serialization.write
 import org.json4s.{Formats, ShortTypeHints}
 
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.util.{Failure, Success}
+import scala.concurrent.Await
+import scala.concurrent.duration.Duration
 
 object MainTest extends App {
 
@@ -65,12 +61,19 @@ object MainTest extends App {
   val mealsUtil = new MealsUtil()
 
   implicit val mealToFormat: AnyRef with Formats = Serialization.formats(ShortTypeHints(List(classOf[MealTo])))
-  val mealsList = mealDaoImpl.getAll(authUtil.authUserId).map {
-    meal => mealsUtil.getTos(meal.toList, authUtil.authUserCaloriesPerDay).map { mealTo => mealTo.idToInt }
-  }
-  onComplete(mealsList) {
-    case Success(value) => complete(HttpEntity(ContentTypes.`application/json`, write(value)))
-    case Failure(ex) => complete(InternalServerError, s"An error occurred: ${ex.getMessage}")
-  }
+
+  val allMeals = Await.result(mealDaoImpl.getAll(authUtil.authUserId), Duration.Inf)
+  println(allMeals)
+  val allMealsTo: List[MealTo] = mealsUtil.getTos(allMeals.toList, authUtil.authUserCaloriesPerDay)
+  println(allMealsTo.map {mealTo => mealTo.idToInt})
+
+//  val mealsList = mealDaoImpl.getAll(authUtil.authUserId).map {
+//    meal => mealsUtil.getTos(meal.toList, authUtil.authUserCaloriesPerDay).map { mealTo => mealTo.idToInt }
+//  }
+
+//  onComplete(mealsList) {
+//    case Success(value) => complete(HttpEntity(ContentTypes.`application/json`, write(value)))
+//    case Failure(ex) => complete(InternalServerError, s"An error occurred: ${ex.getMessage}")
+//  }
   println()
 }

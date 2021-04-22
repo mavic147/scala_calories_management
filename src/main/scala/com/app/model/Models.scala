@@ -1,7 +1,7 @@
 package com.app.model
 
 import com.app.model.Role.Role
-import org.bson.codecs.pojo.annotations.BsonId
+import org.bson.codecs.pojo.annotations.BsonProperty
 
 import java.time.{LocalDate, LocalDateTime, LocalTime}
 import java.util.Date
@@ -12,20 +12,20 @@ import java.util.Date
 //
 //}
 
-case class Meal(@BsonId var id: String, dateTime: LocalDateTime, description: String, calories: Int, userId: String) {
+case class Meal(@BsonProperty("_id") var _id: String, dateTime: LocalDateTime, description: String, calories: Int, userId: String) {
 
-  override def toString: String = s"Meal {id= ${id}, dateTime= ${dateTime}, description= ${description}, " +
+  override def toString: String = s"Meal {id= ${_id}, dateTime= ${dateTime}, description= ${description}, " +
     s"calories= ${calories}}"
 
-  def idToInt = Map ("id" -> id.toInt)
+  def idToInt = Map ("id" -> _id.toInt)
 
   def userIdToInt = Map ("userId" -> userId.toInt)
 
   var idCounter = 100011
 
-  def incrementId(): Int = {
+  def incrementId(): String = {
     idCounter = idCounter + 1
-    idCounter
+    idCounter.toString
   }
 
   def getDate: LocalDate = {
@@ -42,13 +42,18 @@ case class Meal(@BsonId var id: String, dateTime: LocalDateTime, description: St
 //    User(new ObjectId(), name, email, password, caloriesPerDay, registered, roles)
 //}
 
-case class User(@BsonId var id: String, name:String, email:String, password:String, caloriesPerDay:Int, registered:Date, roles: Set[Role]) {
+case class User(@BsonProperty("_id") var _id: String, name:String, email:String, password:String, caloriesPerDay:Int, registered:Date, roles: Set[Role]) {
 
-  override def toString: String = s"User {id= ${id}, name= ${name}, email= ${email}, caloriesPerDay= ${caloriesPerDay}}"
+  override def toString: String = s"User {id= ${_id}, name= ${name}, email= ${email}, caloriesPerDay= ${caloriesPerDay}}"
 
-  def idToInt = Map ("id" -> id.toInt)
+  def idToInt = Map ("id" -> _id.toInt)
 
-  def incrementId(): Int = id.toInt + 1
+  var idCounter = 150000
+
+  def incrementId(): String = {
+    idCounter = idCounter + 1
+    idCounter.toString
+  }
 }
 
 object Role extends Enumeration {

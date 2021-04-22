@@ -7,8 +7,8 @@ db.users.createIndex({"email": 1}, {unique: true})
 db.meals.createIndex({"userId": 1, "dateTime": 1}, {unique: true})
 
 db.createCollection("users")
-let user_id = 100000
-let admin_id = user_id + 1
+let user_id = "100000"
+let admin_id = "100001"
 db.users.insertMany([{_id: user_id, name: "UserAlice", email: "user@yandex.ru", password: "user", roles: ["User"]},
     {_id: admin_id, name: "AdminMark", email: "admin@gmail.com", password: "admin", roles: ["Admin", "User"]}])
 
@@ -22,15 +22,15 @@ let date7 = new Date(2021, 1, 31, 19, 0);
 let date8 = new Date(2021, 1, 31, 14, 0);
 let date9 = new Date(2021, 1, 31, 21, 0);
 
-let meal1_id = admin_id + 1
-let meal2_id = meal1_id + 1
-let meal3_id = meal2_id + 1
-let meal4_id = meal3_id + 1
-let meal5_id = meal4_id + 1
-let meal6_id = meal5_id + 1
-let meal7_id = meal6_id + 1
-let meal8_id = meal7_id + 1
-let meal9_id = meal8_id + 1
+let meal1_id = "100002"
+let meal2_id = "100003"
+let meal3_id = "100004"
+let meal4_id = "100005"
+let meal5_id = "100006"
+let meal6_id = "100007"
+let meal7_id = "100008"
+let meal8_id = "100009"
+let meal9_id = "100010"
 db.createCollection("meals")
 db.meals.insertMany([
     {

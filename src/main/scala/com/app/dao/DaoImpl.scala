@@ -69,7 +69,7 @@ case class MealDaoImpl() extends MealDao {
   }
 
   override def update(meal: Meal, userId: String): Future[Meal] = {
-    mealCollection.findOneAndReplace(and(equal("_id", meal.id), equal("userId", userId)), meal).toFuture()
+    mealCollection.findOneAndReplace(and(equal("_id", meal._id), equal("userId", userId)), meal).toFuture()
   }
 }
 
@@ -120,7 +120,7 @@ case class UserDaoImpl() extends UserDao {
   }
 
   override def update(user: User): Future[User] = {
-    userCollection.findOneAndReplace(equal("_id", user.id), user).toFuture()
+    userCollection.findOneAndReplace(equal("_id", user._id), user).toFuture()
   }
 
   override def create(user: User): Future[result.InsertOneResult] = {
