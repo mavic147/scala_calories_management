@@ -1,8 +1,8 @@
 import com.app.dao.{MealDaoImpl, UserDaoImpl}
 import com.app.model.User
-import org.json4s.{Formats, ShortTypeHints}
 import org.json4s.jackson.Serialization
 import org.json4s.jackson.Serialization.write
+import org.json4s.{Formats, ShortTypeHints}
 
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
@@ -74,8 +74,6 @@ object MainTest extends App {
   implicit val userFormat: AnyRef with Formats = Serialization.formats(ShortTypeHints(List(classOf[User])))
   val allUsers = Await.result(userDaoImpl.getAll, Duration.Inf)
   println(allUsers)
-  println(write(allUsers))
+  println(write(allUsers.map(user => user.toMap)))
 
-
-  println()
 }

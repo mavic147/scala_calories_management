@@ -9,8 +9,27 @@ db.meals.createIndex({"userId": 1, "dateTime": 1}, {unique: true})
 db.createCollection("users")
 let user_id = "100000"
 let admin_id = "100001"
-db.users.insertMany([{_id: user_id, name: "UserAlice", email: "user@yandex.ru", password: "user", roles: ["User"]},
-    {_id: admin_id, name: "AdminMark", email: "admin@gmail.com", password: "admin", roles: ["Admin", "User"]}])
+let userDate = new Date(2021, 1, 29)
+let adminDate = new Date(2021, 1, 30)
+db.users.insertMany([
+    {
+        _id: user_id,
+        name: "UserAlice",
+        email: "user@yandex.ru",
+        password: "user",
+        caloriesPerDay: 1800,
+        registered: userDate,
+        roles: ["User"]
+    },
+    {
+        _id: admin_id,
+        name: "AdminMark",
+        email: "admin@gmail.com",
+        password: "admin",
+        caloriesPerDay: 2000,
+        registered: adminDate,
+        roles: ["Admin", "User"]
+    }])
 
 let date1 = new Date(2021, 1, 30, 10, 0);
 let date2 = new Date(2021, 1, 30, 13, 0);

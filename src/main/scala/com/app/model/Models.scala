@@ -1,6 +1,5 @@
 package com.app.model
 
-import com.app.model.Role.Role
 import org.bson.codecs.pojo.annotations.BsonProperty
 
 import java.time.{LocalDate, LocalDateTime, LocalTime, ZoneOffset}
@@ -47,10 +46,11 @@ case class Meal(@BsonProperty("_id") var _id: String, dateTime: LocalDateTime, d
 //    User(new ObjectId(), name, email, password, caloriesPerDay, registered, roles)
 //}
 
-case class User(@BsonProperty("_id") var _id: String, name:String, email:String, password:String, caloriesPerDay:Int,
-                registered:Date, roles: Set[Role]) {
+case class User(@BsonProperty("_id") var _id: String, name:String, email:String, password:String, caloriesPerDay: Int,
+                registered:Date, roles: Set[String]) {
 
-  override def toString: String = s"User {id= ${_id}, name= ${name}, email= ${email}, caloriesPerDay= ${caloriesPerDay}}"
+  override def toString: String = s"User {id= ${_id}, name= ${name}, email= ${email}, caloriesPerDay= ${caloriesPerDay}, " +
+    s"roles= ${roles}"
 
   def toMap = Map (
     "id" -> _id.toInt,
@@ -70,7 +70,7 @@ case class User(@BsonProperty("_id") var _id: String, name:String, email:String,
   }
 }
 
-object Role extends Enumeration {
-  type Role = Value
-  val User, Admin = Value
-}
+//object Role extends Enumeration {
+//  type Role = Value
+//  val User, Admin = Value
+//}
