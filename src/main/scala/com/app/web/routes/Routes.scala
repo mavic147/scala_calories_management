@@ -38,6 +38,13 @@ object MealRoute {
             }
           }
         },
+        path("users") {
+          post {
+            val id = parameter("userId").toString
+            authUtil.setAuthUserId(id)
+            complete(StatusCodes.OK)
+          }
+        },
         path("meals") {
           get {
             implicit val formats: AnyRef with Formats = Serialization.formats(ShortTypeHints(List(classOf[MealTo])))
