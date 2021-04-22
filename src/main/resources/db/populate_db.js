@@ -19,7 +19,7 @@ db.users.insertMany([
         password: "user",
         caloriesPerDay: 1800,
         registered: userDate,
-        roles: ["User"]
+        roles: ["USER"]
     },
     {
         _id: admin_id,
@@ -28,7 +28,7 @@ db.users.insertMany([
         password: "admin",
         caloriesPerDay: 2000,
         registered: adminDate,
-        roles: ["Admin", "User"]
+        roles: ["ADMIN", "USER"]
     }])
 
 let date1 = new Date(2021, 1, 30, 10, 0);

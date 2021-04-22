@@ -58,7 +58,7 @@ case class User(@BsonProperty("_id") var _id: String, name:String, email:String,
     "email" -> email,
     "password" -> password,
     "caloriesPerDay" -> caloriesPerDay,
-    "registered" -> registered,
+    "registered" -> registered.getTime,
     "roles" -> roles
   )
 
