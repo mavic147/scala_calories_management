@@ -5,12 +5,6 @@ import org.bson.codecs.pojo.annotations.BsonProperty
 import java.time.{LocalDate, LocalDateTime, LocalTime, ZoneOffset}
 import java.util.Date
 
-//object Meal {
-//  def apply(dateTime: LocalDateTime, description: String, calories: Int, userId: ObjectId): Meal =
-//    Meal(new ObjectId(), dateTime, description, calories, userId)
-//
-//}
-
 case class Meal(@BsonProperty("_id") var _id: String, dateTime: LocalDateTime, description: String, calories: Int,
                 userId: String) {
 
@@ -41,11 +35,6 @@ case class Meal(@BsonProperty("_id") var _id: String, dateTime: LocalDateTime, d
   }
 }
 
-//object User {
-//  def apply(name: String, email: String, password: String, caloriesPerDay: Int, registered: Date, roles: List[Role]): User =
-//    User(new ObjectId(), name, email, password, caloriesPerDay, registered, roles)
-//}
-
 case class User(@BsonProperty("_id") var _id: String, name:String, email:String, password:String, caloriesPerDay: Int,
                 registered:Date, roles: Set[String]) {
 
@@ -69,8 +58,3 @@ case class User(@BsonProperty("_id") var _id: String, name:String, email:String,
     idCounter.toString
   }
 }
-
-//object Role extends Enumeration {
-//  type Role = Value
-//  val User, Admin = Value
-//}
