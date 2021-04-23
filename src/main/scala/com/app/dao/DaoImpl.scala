@@ -24,48 +24,23 @@ case class MealDaoImpl() extends MealDao {
 
   override def getOne(id: String, userId: String): Future[Seq[Meal]] = {
     mealCollection.find(and(equal("_id", id), equal("userId", userId))).toFuture()
-//    val getOneOp = mealCollection.find(and(equal("_id", id), equal("userId", userId))).toFuture()
-//    getOneOp.onComplete {
-//      case Success(result: Seq[Meal]) => println(result)
-//      case Failure(ex: Exception) => println(s"Operation failed with $ex")
-//    }
-
-//    Await.result(getOneOp, Duration.Inf)
   }
 
   override def delete(id: String, userId: String): Future[result.DeleteResult]  = {
     mealCollection.deleteOne(and(equal("_id", id), equal("userId", userId))).toFuture()
-
-//    Await.result(deleteOp, Duration.Inf)
   }
 
   override def getAll(userId: String): Future[Seq[Meal]] = {
     mealCollection.find(equal("userId", userId)).toFuture()
-//    val getAllOp = mealCollection.find(equal("userId", userId)).toFuture()
-//    getAllOp.onComplete {
-//      case Success(result: Seq[Meal]) => result
-//      case Failure(ex: Exception) => println(s"Operation failed with $ex")
-//    }
-
-//    Await.result(getAllOp, Duration.Inf)
   }
 
   override def getBetweenDates(startDateTime: LocalDateTime, endDateTime: LocalDateTime, userId: String): Future[Seq[Meal]] = {
     mealCollection.find(and(gte("dateTime", startDateTime), lt("dateTime", endDateTime),
       equal("userId", userId))).toFuture()
-
-//    Await.result(getBetweenDatesOp, Duration.Inf)
   }
 
   override def create(meal: Meal): Future[result.InsertOneResult] = {
     mealCollection.insertOne(meal).toFuture()
-//    val createOp = mealCollection.insertOne(meal).toFuture()
-//    createOp.onComplete {
-//      case Success(result: InsertOneResult) => result
-//      case Failure(ex: Exception) => println(s"Operation failed with $ex")
-//    }
-
-//    Await.result(createOp, Duration.Inf)
   }
 
   override def update(meal: Meal, userId: String): Future[Meal] = {
@@ -81,38 +56,14 @@ case class UserDaoImpl() extends UserDao {
 
   override def getAll: Future[Seq[User]] = {
     userCollection.find().toFuture()
-
-//    val getAllOp = userCollection.find().toFuture()
-//    getAllOp.onComplete {
-//      case Success(result: Seq[User]) => result
-//      case Failure(ex: Exception) => println(s"Operation failed with $ex")
-//    }
-//
-//    Await.result(getAllOp, Duration.Inf)
   }
 
   override def getByEmail(email: String): Future[Seq[User]] = {
     userCollection.find(equal("email", email)).toFuture()
-
-//    val getByEmailOp = userCollection.find().toFuture()
-//    getByEmailOp.onComplete {
-//      case Success(result: Seq[User]) => result
-//      case Failure(ex: Exception) => println(s"Operation failed with $ex")
-//    }
-//
-//    Await.result(getByEmailOp, Duration.Inf)
   }
 
   override def getOne(id: String): Future[Seq[User]] = {
     userCollection.find(equal("_id", id)).toFuture()
-
-//    val getOneOp = userCollection.find().toFuture()
-//    getOneOp.onComplete {
-//      case Success(result: Seq[User]) => result
-//      case Failure(ex: Exception) => println(s"Operation failed with $ex")
-//    }
-//
-//    Await.result(getOneOp, Duration.Inf)
   }
 
   override def delete(id: String): Future[result.DeleteResult] = {
@@ -125,13 +76,5 @@ case class UserDaoImpl() extends UserDao {
 
   override def create(user: User): Future[result.InsertOneResult] = {
     userCollection.insertOne(user).toFuture()
-
-//    val createOp = userCollection.insertOne(user).toFuture()
-//    createOp.onComplete {
-//      case Success(result: InsertOneResult) => result
-//      case Failure(ex: Exception) => println(s"Operation failed with $ex")
-//    }
-//
-//    Await.result(createOp, Duration.Inf)
   }
 }

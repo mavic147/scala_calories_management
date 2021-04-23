@@ -45,12 +45,11 @@ object MealRoute {
         },
         path("users") {
           post {
-            entity(as[String]) map { body =>
-//              log.info("POST request: " + e)
+            entity(as[Array[Byte]]) map { body =>
+              val resString = body.map(_.toChar).mkString
               var res = Array[String]()
-//              res = parseJson(json).toString.split(":")
-              res = body.split("=")
-              authUtil.setAuthUserId(res(1))
+              resString.split("=")
+//              authUtil.setAuthUserId(resString(1))
             }
             complete(StatusCodes.OK)
           }
@@ -137,12 +136,12 @@ object MealRoute {
                 implicit val formats: AnyRef with Formats = Serialization.formats(ShortTypeHints(List(classOf[MealTo])))
                 val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MMM-dd")
                 val timeFormatter = DateTimeFormatter.ofPattern("HH-mm-ss")
-                parameters("startDate", "endDate", "startTime", "endTime") {
+                parameters("startDate".optional, "endDate".optional, "startTime".optional, "endTime".optional) {
                   (sD, eD, sT, eT) =>
-                    val startDate: LocalDate = LocalDate.parse(sD, dateFormatter)
-                    val endDate: LocalDate = LocalDate.parse(eD, dateFormatter)
-                    val startTime: LocalTime = LocalTime.parse(sT, timeFormatter)
-                    val endTime: LocalTime = LocalTime.parse(eT, timeFormatter)
+                    val startDate: LocalDate = LocalDate.parse(sD.get, dateFormatter)
+                    val endDate: LocalDate = LocalDate.parse(eD.get, dateFormatter)
+                    val startTime: LocalTime = LocalTime.parse(sT.get, timeFormatter)
+                    val endTime: LocalTime = LocalTime.parse(eT.get, timeFormatter)
                     val mealsDateFiltered = mealDaoImpl.getBetweenDates(dateTimeUtil.atStartOfDayOrMin(startDate),
                       dateTimeUtil.atStartOfNextDayOrMax(endDate), authUtil.authUserId)
                     onComplete(mealsDateFiltered) {
