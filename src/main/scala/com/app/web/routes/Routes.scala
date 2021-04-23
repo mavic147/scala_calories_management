@@ -40,8 +40,12 @@ object MealRoute {
         },
         path("users") {
           post {
-            val id = parameter("userId").toString
-            authUtil.setAuthUserId(id)
+            entity(as[String]) map { e =>
+//              log.info("POST request: " + e)
+              var res = Array[String]()
+              res = e.split("=")
+              authUtil.setAuthUserId(res(1))
+            }
             complete(StatusCodes.OK)
           }
         },

@@ -2,15 +2,11 @@ package com.app
 
 case class AuthUtil() {
   private val DEFAULT_CALORIES_PER_DAY: Int = 2000
-  //change whenever db script is executed
-  private val FAKE_AUTH_ID: String = "100000"
 
-  private var id = FAKE_AUTH_ID
-
-  val authUserId: String = id
+  var authUserId: String = "100000"
 
   def setAuthUserId(id: String): Unit = {
-    this.id = id
+    this.authUserId = id
   }
 
   def authUserCaloriesPerDay: Int = DEFAULT_CALORIES_PER_DAY
