@@ -19,13 +19,6 @@ case class Meal(@BsonProperty("_id") var _id: String, dateTime: LocalDateTime, d
     "userId" -> userId.toInt
   )
 
-  var idCounter = 100011
-
-  def incrementId(): String = {
-    idCounter = idCounter + 1
-    idCounter.toString
-  }
-
   def getDate: LocalDate = {
     this.dateTime.toLocalDate
   }
@@ -50,11 +43,4 @@ case class User(@BsonProperty("_id") var _id: String, name:String, email:String,
     "registered" -> registered.getTime,
     "roles" -> roles
   )
-
-  var idCounter = 150000
-
-  def incrementId(): String = {
-    idCounter = idCounter + 1
-    idCounter.toString
-  }
 }
