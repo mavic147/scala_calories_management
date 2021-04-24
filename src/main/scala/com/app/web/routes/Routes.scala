@@ -60,7 +60,7 @@ object MealRoute {
               val userId = parseJson(json).extract[UserIdJson].userId
               val oldValue = authUtil.authUserId
               authUtil.setAuthUserId(userId)
-              complete(s"Old value = ${oldValue} New Value = ${authUtil.authUserId}")
+              complete(StatusCodes.OK)
             }
           }
         },
