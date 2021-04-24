@@ -14,7 +14,10 @@ object Meal {
     idCounter.toString
   }
 
-  def apply(dateTime: LocalDateTime, description: String, calories: Int, userId: String): Meal =
+  def apply(dateTime: LocalDateTime,
+            description: String,
+            calories: Int,
+            userId: String): Meal =
     Meal(incrementId(), dateTime, description, calories, userId)
 }
 
@@ -24,7 +27,7 @@ case class Meal(@BsonProperty("_id") var _id: String, dateTime: LocalDateTime, d
   override def toString: String = s"Meal {id= ${_id}, dateTime= ${dateTime}, description= ${description}, " +
     s"calories= ${calories}}"
 
-  def toMap = Map (
+  def toMap = Map(
     "id" -> _id.toInt,
     "dateTime" -> dateTime.toEpochSecond(ZoneOffset.UTC),
     "description" -> description,
@@ -50,17 +53,27 @@ object User {
     idCounter.toString
   }
 
-  def apply(name: String, email: String, password: String, caloriesPerDay: Int, registered: Date, roles: Set[String]): User =
-    User(incrementId(), name, email, password, caloriesPerDay, registered, roles)
+  def apply(name: String,
+            email: String,
+            password: String,
+            caloriesPerDay: Int,
+            registered: Date,
+            roles: Set[String]
+           ): User = User(incrementId(), name, email, password, caloriesPerDay, registered, roles)
 }
 
-case class User(@BsonProperty("_id") var _id: String, name:String, email:String, password:String, caloriesPerDay: Int,
-                registered:Date, roles: Set[String]) {
+case class User(@BsonProperty("_id") var _id: String,
+                name: String,
+                email: String,
+                password: String,
+                caloriesPerDay: Int,
+                registered: Date,
+                roles: Set[String]) {
 
   override def toString: String = s"User {id= ${_id}, name= ${name}, email= ${email}, caloriesPerDay= ${caloriesPerDay}, " +
     s"roles= ${roles}"
 
-  def toMap = Map (
+  def toMap = Map(
     "id" -> _id.toInt,
     "name" -> name,
     "email" -> email,
