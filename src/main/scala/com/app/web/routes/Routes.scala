@@ -9,14 +9,18 @@ import com.app.dao.{MealDaoImpl, UserDaoImpl}
 import com.app.model.{Meal, User}
 import com.app.to.MealTo
 import com.app.util.{DateTimeUtil, MealsUtil}
-import org.json4s.jackson.Serialization
-import org.json4s.jackson.Serialization.write
-import org.json4s.{Formats, ShortTypeHints}
+import org.json4s.jackson.{Serialization, parseJson}
+import org.json4s.{DefaultFormats, Formats, ShortTypeHints}
+import org.slf4j.{Logger, LoggerFactory}
 
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import java.time.{LocalDate, LocalDateTime, LocalTime}
 import scala.util.{Failure, Success}
+
+
+case class UserIdJson(userId: String)
+
 
 object MealRoute {
 
@@ -30,6 +34,9 @@ object MealRoute {
 
   val dateTimeUtil = new DateTimeUtil()
 
+  val log: Logger = LoggerFactory.getLogger(this.getClass)
+
+
   val route: Route = {
     pathPrefix("topjava") {
       concat(
@@ -39,7 +46,8 @@ object MealRoute {
             implicit val userFormat: AnyRef with Formats = Serialization.formats(ShortTypeHints(List(classOf[User])))
             val usersList = userDaoImpl.getAll
             onComplete(usersList) {
-              case Success(value) => complete(HttpEntity(ContentTypes.`application/json`, write(value.map(user => user.toMap))))
+              case Success(value) => complete(HttpEntity(ContentTypes.`application/json`,
+                Serialization.write(value.map(user => user.toMap))))
               case Failure(ex) => complete(InternalServerError, s"An error occurred: ${ex.getMessage}")
             }
           }
@@ -47,13 +55,13 @@ object MealRoute {
 
         path("users") {
           post {
-            entity(as[Array[Byte]]) map { body =>
-              val resString = body.map(_.toChar).mkString
-              var res = Array[String]()
-              resString.split("=")
-//              authUtil.setAuthUserId(resString(1))
+            implicit val formats: Formats = DefaultFormats
+            entity(as[String]) { json =>
+              val userId = parseJson(json).extract[UserIdJson].userId
+              val oldValue = authUtil.authUserId
+              authUtil.setAuthUserId(userId)
+              complete(s"Old value = ${oldValue} New Value = ${authUtil.authUserId}")
             }
-            complete(StatusCodes.OK)
           }
         },
 
@@ -66,7 +74,7 @@ object MealRoute {
                 val mealsList = mealDaoImpl.getAll(authUtil.authUserId)
                 onComplete(mealsList) {
                   case Success(value) => complete(HttpEntity(ContentTypes.`application/json`,
-                    write(mealsUtil.getTos(value.toList, authUtil.authUserCaloriesPerDay).map(mealTo => mealTo.toMap))))
+                    Serialization.write(mealsUtil.getTos(value.toList, authUtil.authUserCaloriesPerDay).map(mealTo => mealTo.toMap))))
                   case Failure(ex) => complete(InternalServerError, s"An error occurred: ${ex.getMessage}")
                 }
               }
@@ -88,7 +96,7 @@ object MealRoute {
                 //                    implicit val userFormat: AnyRef with Formats = Serialization.formats(ShortTypeHints(List(classOf[Meal])))
                 //                    val updateOp = mealDaoImpl.update(meal, authUtil.authUserId)
                 //                    onComplete(updateOp) {
-                //                      case Success(value) => complete(HttpEntity(ContentTypes.`application/json`, write(value.toMap)))
+                //                      case Success(value) => complete(HttpEntity(ContentTypes.`application/json`, Serialization.write(value.toMap)))
                 //                      case Failure(ex) => complete(InternalServerError, s"An error occurred: ${ex.getMessage}")
                 //                    }
                 //                  }
@@ -125,7 +133,7 @@ object MealRoute {
                 val updateOp = mealDaoImpl.getOne(id, authUtil.authUserId)
                 onComplete(updateOp) {
                   case Success(value) => complete(HttpEntity(ContentTypes.`application/json`,
-                    write(value.map(meal => meal.toMap))))
+                    Serialization.write(value.map(meal => meal.toMap))))
                   case Failure(ex) => complete(InternalServerError, s"An error occurred: ${ex.getMessage}")
                 }
               }
@@ -136,7 +144,7 @@ object MealRoute {
                 implicit val userFormat: AnyRef with Formats = Serialization.formats(ShortTypeHints(List(classOf[Meal])))
                 val meal: Meal = Meal(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS),
                   "", 1000, authUtil.authUserId)
-                complete(HttpEntity(ContentTypes.`application/json`, write(meal.toMap)))
+                complete(HttpEntity(ContentTypes.`application/json`, Serialization.write(meal.toMap)))
               }
             },
 
@@ -155,7 +163,7 @@ object MealRoute {
                       dateTimeUtil.atStartOfNextDayOrMax(endDate), authUtil.authUserId)
                     onComplete(mealsDateFiltered) {
                       case Success(value) => complete(HttpEntity(ContentTypes.`application/json`,
-                        write(mealsUtil.getFilteredTos(value.toList, authUtil.authUserCaloriesPerDay, startTime, endTime)
+                        Serialization.write(mealsUtil.getFilteredTos(value.toList, authUtil.authUserCaloriesPerDay, startTime, endTime)
                           .map(mealTo => mealTo.toMap))))
                       case Failure(ex) => complete(InternalServerError, s"An error occurred: ${ex.getMessage}")
                     }
