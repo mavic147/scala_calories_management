@@ -1,4 +1,4 @@
-package com.app
+package com.app.util
 
 case class AuthUtil() {
   private val DEFAULT_CALORIES_PER_DAY: Int = 2000

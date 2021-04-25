@@ -4,11 +4,10 @@ import akka.http.scaladsl.model.StatusCodes.InternalServerError
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
-import com.app.AuthUtil
 import com.app.dao.{MealDaoImpl, UserDaoImpl}
 import com.app.model.{Meal, User}
 import com.app.to.MealTo
-import com.app.util.{DateTimeUtil, MealFieldsJson, MealsUtil, UserIdJson}
+import com.app.util.{AuthUtil, DateTimeUtil, MealFieldsJson, MealsUtil, UserIdJson}
 import org.json4s.jackson.{Serialization, parseJson}
 import org.json4s.{DefaultFormats, Formats, ShortTypeHints}
 import org.slf4j.{Logger, LoggerFactory}
