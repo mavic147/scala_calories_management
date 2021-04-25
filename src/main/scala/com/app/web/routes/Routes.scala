@@ -8,19 +8,15 @@ import com.app.AuthUtil
 import com.app.dao.{MealDaoImpl, UserDaoImpl}
 import com.app.model.{Meal, User}
 import com.app.to.MealTo
-import com.app.util.{DateTimeUtil, MealsUtil}
+import com.app.util.{DateTimeUtil, MealFieldsJson, MealsUtil, UserIdJson}
 import org.json4s.jackson.{Serialization, parseJson}
 import org.json4s.{DefaultFormats, Formats, ShortTypeHints}
 import org.slf4j.{Logger, LoggerFactory}
 
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
-import java.time.{LocalDate, LocalDateTime, LocalTime}
+import java.time.{LocalDate, LocalDateTime, LocalTime, ZoneOffset}
 import scala.util.{Failure, Success}
-
-
-case class UserIdJson(userId: String)
-
 
 object MealRoute {
 
@@ -35,7 +31,6 @@ object MealRoute {
   val dateTimeUtil = new DateTimeUtil()
 
   val log: Logger = LoggerFactory.getLogger(this.getClass)
-
 
   val route: Route = {
     pathPrefix("topjava") {
@@ -58,7 +53,6 @@ object MealRoute {
             implicit val formats: Formats = DefaultFormats
             entity(as[String]) { json =>
               val userId = parseJson(json).extract[UserIdJson].userId
-              val oldValue = authUtil.authUserId
               authUtil.setAuthUserId(userId)
               complete(StatusCodes.OK)
             }
@@ -82,26 +76,35 @@ object MealRoute {
 
             path("") {
               post {
-                //                entity(as[String]) map { body =>
-                //                  //вытащить значения из тела и положить в meal (id не класть!)
-                //                  val meal: Meal = Meal()
-                //                  if(id.isEmpty) {
-                //                    val createOp =  mealDaoImpl.create(meal)
-                //                    onComplete(createOp) {
-                //                      case Success(value) => complete(StatusCodes.OK)
-                //                      case Failure(ex) => complete(InternalServerError, s"An error occurred: ${ex.getMessage}")
-                //                    }
-                //                  }
-                //                  else {
-                //                    implicit val userFormat: AnyRef with Formats = Serialization.formats(ShortTypeHints(List(classOf[Meal])))
-                //                    val updateOp = mealDaoImpl.update(meal, authUtil.authUserId)
-                //                    onComplete(updateOp) {
-                //                      case Success(value) => complete(HttpEntity(ContentTypes.`application/json`, Serialization.write(value.toMap)))
-                //                      case Failure(ex) => complete(InternalServerError, s"An error occurred: ${ex.getMessage}")
-                //                    }
-                //                  }
-                //                }
-                ???
+                var id:String = ""
+                var dateTime: LocalDateTime = LocalDateTime.now()
+                var description = ""
+                var calories: Int = 0
+                entity(as[String]) map { json =>
+                  implicit val formats: Formats = DefaultFormats
+                  val mealFields = parseJson(json).extract[MealFieldsJson]
+                  id = mealFields.id
+                  dateTime = LocalDateTime.ofEpochSecond(mealFields.dateTime.toLong, 0, ZoneOffset.UTC)
+                  description = mealFields.description
+                  calories = mealFields.calories.toInt
+                }
+                if (id.isEmpty) {
+                  val meal: Meal = Meal(authUtil.incrementId(), dateTime, description, calories, authUtil.authUserId)
+                  val createOp = mealDaoImpl.create(meal)
+                  onComplete(createOp) {
+                    case Success(_) => complete(StatusCodes.OK)
+                    case Failure(ex) => complete(InternalServerError, s"An error occurred: ${ex.getMessage}")
+                  }
+                }
+                else {
+                  implicit val mealFormat: AnyRef with Formats = Serialization.formats(ShortTypeHints(List(classOf[Meal])))
+                  val meal: Meal = Meal(id, dateTime, description, calories, authUtil.authUserId)
+                  val updateOp = mealDaoImpl.update(meal, authUtil.authUserId)
+                  onComplete(updateOp) {
+                    case Success(value) => complete(HttpEntity(ContentTypes.`application/json`, Serialization.write(value.toMap)))
+                    case Failure(ex) => complete(InternalServerError, s"An error occurred: ${ex.getMessage}")
+                  }
+                }
               }
             },
 

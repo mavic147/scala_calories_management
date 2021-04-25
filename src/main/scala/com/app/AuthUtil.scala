@@ -10,4 +10,11 @@ case class AuthUtil() {
   }
 
   def authUserCaloriesPerDay: Int = DEFAULT_CALORIES_PER_DAY
+
+  var idCounter = 100011
+
+  def incrementId(): String = {
+    idCounter = idCounter + 1
+    idCounter.toString
+  }
 }
