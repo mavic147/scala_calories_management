@@ -7,7 +7,7 @@ import akka.http.scaladsl.server.Route
 import com.app.dao.{MealDaoImpl, UserDaoImpl}
 import com.app.model.{Meal, User}
 import com.app.to.MealTo
-import com.app.util.{AuthUtil, DateTimeUtil, MealFieldsJson, MealsUtil, UserIdJson}
+import com.app.util._
 import org.json4s.jackson.{Serialization, parseJson}
 import org.json4s.{DefaultFormats, Formats, ShortTypeHints}
 import org.slf4j.{Logger, LoggerFactory}
@@ -15,6 +15,7 @@ import org.slf4j.{Logger, LoggerFactory}
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import java.time.{LocalDate, LocalDateTime, LocalTime, ZoneOffset}
+import java.util.Date
 import scala.util.{Failure, Success}
 
 object MealRoute {
@@ -35,29 +36,50 @@ object MealRoute {
     pathPrefix("topjava") {
       concat(
 
-        path("users") {
-          get {
-            implicit val userFormat: AnyRef with Formats = Serialization.formats(ShortTypeHints(List(classOf[User])))
-            val usersList = userDaoImpl.getAll
-            log.info("get all users")
-            onComplete(usersList) {
-              case Success(value) => complete(HttpEntity(ContentTypes.`application/json`,
-                Serialization.write(value.map(user => user.toMap))))
-              case Failure(ex) => complete(InternalServerError, s"An error occurred: ${ex.getMessage}")
-            }
-          }
-        },
+        pathPrefix("users") {
+          concat(
+            path("") {
+              get {
+                implicit val userFormat: AnyRef with Formats = Serialization.formats(ShortTypeHints(List(classOf[User])))
+                val usersList = userDaoImpl.getAll
+                log.info("get all users")
+                onComplete(usersList) {
+                  case Success(value) => complete(HttpEntity(ContentTypes.`application/json`,
+                    Serialization.write(value.map(user => user.toMap))))
+                  case Failure(ex) => complete(InternalServerError, s"An error occurred: ${ex.getMessage}")
+                }
+              }
+            },
 
-        path("users") {
-          post {
-            implicit val formats: Formats = DefaultFormats
-            entity(as[String]) { json =>
-              val userId = parseJson(json).extract[UserIdJson].userId
-              log.info(s"set id for user ${userId}")
-              authUtil.setAuthUserId(userId)
-              complete(StatusCodes.OK)
+            path("") {
+              post {
+                implicit val formats: Formats = DefaultFormats
+                entity(as[String]) { json =>
+                  val userId = parseJson(json).extract[UserIdJson].userId
+                  log.info(s"set id for user ${userId}")
+                  authUtil.setAuthUserId(userId)
+                  complete(StatusCodes.OK)
+                }
+              }
+            },
+
+            path("create") {
+              post {
+                implicit val formats: Formats = DefaultFormats
+                entity(as[String]) { json =>
+                  val userJson = parseJson(json).extract[CreateUserJson]
+                  val name = userJson.name
+                  val email = userJson.email
+                  val password = userJson.password
+                  val user = User(authUtil.incrementId(), name, email, password, authUtil.authUserCaloriesPerDay,
+                    new Date(), Set("USER"))
+                  log.info("create new user")
+                  userDaoImpl.create(user)
+                  complete(StatusCodes.OK)
+                }
+              }
             }
-          }
+          )
         },
 
         pathPrefix("meals") {

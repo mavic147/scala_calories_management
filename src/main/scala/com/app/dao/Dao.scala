@@ -19,11 +19,6 @@ trait MealDao {
 trait UserDao {
 
   def getAll: Future[Seq[User]]
-  def getByEmail(email: String): Future[Seq[User]]
-  def getOne(id: String): Future[Seq[User]]
-  def delete(id: String): Future[result.DeleteResult]
-  def update(user: User):Future[User]
   def create(user: User): Future[result.InsertOneResult]
-
 }
 

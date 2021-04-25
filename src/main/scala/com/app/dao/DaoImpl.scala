@@ -44,7 +44,8 @@ case class MealDaoImpl() extends MealDao {
   }
 
   override def update(meal: Meal, userId: String): Future[Meal] = {
-    mealCollection.findOneAndReplace(and(equal("_id", meal._id), equal("userId", userId)), meal).toFuture()
+    mealCollection.findOneAndReplace(and(equal("_id", meal._id), equal("userId", userId)), meal)
+      .toFuture()
   }
 }
 
@@ -56,22 +57,6 @@ case class UserDaoImpl() extends UserDao {
 
   override def getAll: Future[Seq[User]] = {
     userCollection.find().toFuture()
-  }
-
-  override def getByEmail(email: String): Future[Seq[User]] = {
-    userCollection.find(equal("email", email)).toFuture()
-  }
-
-  override def getOne(id: String): Future[Seq[User]] = {
-    userCollection.find(equal("_id", id)).toFuture()
-  }
-
-  override def delete(id: String): Future[result.DeleteResult] = {
-    userCollection.deleteOne(equal("_id", id)).toFuture()
-  }
-
-  override def update(user: User): Future[User] = {
-    userCollection.findOneAndReplace(equal("_id", user._id), user).toFuture()
   }
 
   override def create(user: User): Future[result.InsertOneResult] = {
