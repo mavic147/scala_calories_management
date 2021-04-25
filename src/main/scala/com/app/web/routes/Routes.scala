@@ -145,7 +145,7 @@ object MealRoute {
             path("create") {
               get {
                 implicit val userFormat: AnyRef with Formats = Serialization.formats(ShortTypeHints(List(classOf[Meal])))
-                val meal: Meal = Meal(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS),
+                val meal: Meal = Meal(authUtil.incrementId(), LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS),
                   "", 1000, authUtil.authUserId)
                 complete(HttpEntity(ContentTypes.`application/json`, Serialization.write(meal.toMap)))
               }
@@ -154,14 +154,26 @@ object MealRoute {
             path("filter") {
               get {
                 implicit val formats: AnyRef with Formats = Serialization.formats(ShortTypeHints(List(classOf[MealTo])))
-                val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MMM-dd")
-                val timeFormatter = DateTimeFormatter.ofPattern("HH-mm-ss")
+                val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+                val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
                 parameters("startDate".optional, "endDate".optional, "startTime".optional, "endTime".optional) {
                   (sD, eD, sT, eT) =>
-                    val startDate: LocalDate = LocalDate.parse(sD.get, dateFormatter)
-                    val endDate: LocalDate = LocalDate.parse(eD.get, dateFormatter)
-                    val startTime: LocalTime = LocalTime.parse(sT.get, timeFormatter)
-                    val endTime: LocalTime = LocalTime.parse(eT.get, timeFormatter)
+                    val startDateStr: String = sD.orNull
+                    var startDate: LocalDate = LocalDate.now()
+                    if (startDateStr != "")  startDate = LocalDate.parse(startDateStr, dateFormatter)
+                    else startDate = null
+                    val endDateStr: String = eD.orNull
+                    var endDate: LocalDate = LocalDate.now()
+                    if (endDateStr != "") endDate = LocalDate.parse(endDateStr, dateFormatter)
+                    else endDate = null
+                    val startTimeStr: String = sT.orNull
+                    var startTime: LocalTime = LocalTime.now()
+                    if (startTimeStr != "") startTime = LocalTime.parse(startTimeStr, timeFormatter)
+                    else startTime = null
+                    val endTimeStr: String = eT.orNull
+                    var endTime: LocalTime = LocalTime.now()
+                    if (endTimeStr != "") endTime = LocalTime.parse(endTimeStr, timeFormatter)
+                    else endTime = null
                     val mealsDateFiltered = mealDaoImpl.getBetweenDates(dateTimeUtil.atStartOfDayOrMin(startDate),
                       dateTimeUtil.atStartOfNextDayOrMax(endDate), authUtil.authUserId)
                     onComplete(mealsDateFiltered) {
