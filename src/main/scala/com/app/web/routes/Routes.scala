@@ -109,17 +109,13 @@ object MealRoute {
             },
 
             path("delete") {
-              delete {
-                var id: String = ""
-                entity(as[String]) map { e =>
-                  var res = Array[String]()
-                  res = e.split("=")
-                  id = res(1)
-                }
-                val deletionOp = mealDaoImpl.delete(id, authUtil.authUserId)
-                onComplete(deletionOp) {
-                  case Success(value) => complete(StatusCodes.OK)
-                  case Failure(ex) => complete(InternalServerError, s"An error occurred: ${ex.getMessage}")
+              get {
+                parameters("id") {
+                  id => val deletionOp = mealDaoImpl.delete(id, authUtil.authUserId)
+                    onComplete(deletionOp) {
+                      case Success(_) => complete(StatusCodes.OK)
+                      case Failure(ex) => complete(InternalServerError, s"An error occurred: ${ex.getMessage}")
+                    }
                 }
               }
             },
