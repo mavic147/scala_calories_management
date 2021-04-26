@@ -12,7 +12,7 @@ import org.json4s.jackson.{Serialization, parseJson}
 import org.json4s.{DefaultFormats, Formats, ShortTypeHints}
 import org.slf4j.{Logger, LoggerFactory}
 
-import java.time.format.DateTimeFormatter
+import java.time.format.{DateTimeFormatter, DateTimeParseException}
 import java.time.temporal.ChronoUnit
 import java.time.{LocalDate, LocalDateTime, LocalTime, ZoneOffset}
 import scala.util.{Failure, Success}
@@ -159,22 +159,34 @@ object MealRoute {
                 val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
                 parameters("startDate".optional, "endDate".optional, "startTime".optional, "endTime".optional) {
                   (sD, eD, sT, eT) =>
-                    val startDateStr: String = sD.orNull
-                    var startDate: LocalDate = LocalDate.now()
-                    if (startDateStr != "")  startDate = LocalDate.parse(startDateStr, dateFormatter)
-                    else startDate = null
-                    val endDateStr: String = eD.orNull
-                    var endDate: LocalDate = LocalDate.now()
-                    if (endDateStr != "") endDate = LocalDate.parse(endDateStr, dateFormatter)
-                    else endDate = null
-                    val startTimeStr: String = sT.orNull
+                    var startDate = LocalDate.now()
+                    try {
+                      startDate = LocalDate.parse(sD.get, dateFormatter)
+                    } catch {
+                      case _: DateTimeParseException => startDate = null
+                    }
+
+                    var endDate = LocalDate.now()
+                    try {
+                      endDate = LocalDate.parse(eD.get, dateFormatter)
+                    } catch {
+                      case _: DateTimeParseException => endDate = null
+                    }
+
                     var startTime: LocalTime = LocalTime.now()
-                    if (startTimeStr != "") startTime = LocalTime.parse(startTimeStr, timeFormatter)
-                    else startTime = null
-                    val endTimeStr: String = eT.orNull
+                    try {
+                      startTime = LocalTime.parse(sT.get, timeFormatter)
+                    } catch {
+                      case _: DateTimeParseException => startTime = null
+                    }
+
                     var endTime: LocalTime = LocalTime.now()
-                    if (endTimeStr != "") endTime = LocalTime.parse(endTimeStr, timeFormatter)
-                    else endTime = null
+                    try {
+                      endTime = LocalTime.parse(eT.get, timeFormatter)
+                    } catch {
+                      case _: DateTimeParseException => endTime = null
+                    }
+
                     val mealsDateFiltered = mealDaoImpl.getBetweenDates(dateTimeUtil.atStartOfDayOrMin(startDate),
                       dateTimeUtil.atStartOfNextDayOrMax(endDate), authUtil.authUserId)
                     log.info(s"get between dates ${startDate} - ${endDate}, time ${startTime} - ${endTime} " +
