@@ -17,15 +17,14 @@ object HttpServer {
 
     val port = 8081
 
-//    val bindingFuture = Http().newServerAt("localhost", port).bind(route)
     val bindingFuture = Http().newServerAt("localhost", port).bind(route)
 
     log.info(s"Server started at the port $port")
 
     println(s"Server online at http://localhost:8081/\nPress RETURN to stop...")
-    StdIn.readLine() // let it run until user presses return
+    StdIn.readLine()
     bindingFuture
-      .flatMap(_.unbind()) // trigger unbinding from the port
-      .onComplete(_ => system.terminate()) // and shutdown when done
+      .flatMap(_.unbind())
+      .onComplete(_ => system.terminate())
   }
 }
