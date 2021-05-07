@@ -2,7 +2,6 @@ package com.app
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
-import akka.stream.ActorMaterializer
 import com.app.web.routes.MealRoute.route
 import org.slf4j.{Logger, LoggerFactory}
 
@@ -13,7 +12,6 @@ object HttpServer {
   def main(args: Array[String]): Unit = {
 
     implicit val system: ActorSystem = ActorSystem("simple-http")
-    implicit val materializer: ActorMaterializer = ActorMaterializer()
 
     val log: Logger = LoggerFactory.getLogger(this.getClass)
 
